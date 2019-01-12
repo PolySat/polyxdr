@@ -4,6 +4,18 @@
 ::    #endif
 ::    return pre + val + post 
 :: #enddef
+:: def convstr(bits, eqn, conv):
+::    if bits == 0 and eqn == "":
+::       return 'NULL'
+::    #endif
+::    return '&' + conv[str(bits) + ':' + eqn].name
+:: #enddef
+:: def invstr(bits, eqn, conv):
+::    if bits == 0 and eqn == "":
+::       return 'NULL'
+::    #endif
+::    return '&' + conv[eqn + ':' + str(bits)].name
+:: #enddef
 static struct XDR_FieldDefinition ${st.name.replace('::','_',400)}_Fields[] = {
 :: for m in st.members:
 ::    if m.type == 'void':
@@ -17,7 +29,9 @@ static struct XDR_FieldDefinition ${st.name.replace('::','_',400)}_Fields[] = {
       (XDR_Encoder)&${types[m.type]['enc']}_array,
 :: #endif
       offsetof(struct ${st.name.replace('::','_',400)}, ${m.name}),
-      ${nullstr(m.documentation.key, '"', '"')}, ${nullstr(m.documentation.name, '"', '"')}, ${nullstr(m.documentation.unit, '"', '"')}, ${m.documentation.offset}, ${m.documentation.divisor},
+      ${nullstr(m.documentation.key, '"', '"')}, ${nullstr(m.documentation.name, '"', '"')}, ${nullstr(m.documentation.unit, '"', '"')},
+      ${convstr(m.documentation.fractional_bits, m.documentation.conversion, conv)},
+      ${invstr(m.documentation.fractional_bits, m.documentation.inverse, conv)},
 :: if m.length == None:
       ${nullstr(types[m.type]['print'], '&', '')}, ${nullstr(types[m.type]['scan'], '&', '')},
       ${nullstr(types[m.type]['field_dealloc'], '&', '')}, ${types[m.type]['id']},
@@ -33,7 +47,7 @@ static struct XDR_FieldDefinition ${st.name.replace('::','_',400)}_Fields[] = {
 :: #endif
 
 :: #endfor
-   { NULL, NULL, 0, NULL, NULL, NULL, 0, 0, NULL, 0, NULL, 0 }
+   { NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, 0, NULL, 0 }
 };
 
 static struct XDR_StructDefinition ${st.name.replace('::','_',400)}_Struct = {

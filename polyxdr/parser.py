@@ -106,15 +106,15 @@ class Parser:
       type_name = P.Combine(identifier -  P.OneOrMore('::' + identifier))
       type_name.setParseAction(self.resolveIdent)
 
-      decimal_constant = P.Word('-123456789', '0123456789') | '0'
-      hexadecimal_constant = P.Combine('0x' - P.Word('0123456789abcdefABCDEF'))
-      octal_constant = P.Word('0', '01234567')
+      decimal_literal = P.Word('-123456789', '0123456789') | '0'
+      hexadecimal_literal = P.Combine('0x' - P.Word('0123456789abcdefABCDEF'))
+      octal_literal = P.Word('0', '01234567')
 
-      constant = (hexadecimal_constant | decimal_constant) \
+      numeric_literal = (hexadecimal_literal | decimal_literal) \
           .setName("constant") \
           .setParseAction(lambda x: int(x[0], 0))
 
-      value = constant | identifier
+      value = numeric_literal | identifier
 
       struct_body = P.Forward()
 
@@ -151,23 +151,32 @@ class Parser:
           g(resolved_type_specifier) + identifier | \
           g(resolved_type_specifier) + lit('*') + identifier
 
+      
+      conversion_expr = P.operatorPrecedence( kw("val") | \
+            P.pyparsing_common.fnumber, \
+          [(P.oneOf('+ -'), 1, P.opAssoc.RIGHT), \
+           (P.oneOf('* /'), 2, P.opAssoc.LEFT), \
+           (P.oneOf('+ -'), 2, P.opAssoc.LEFT)] \
+        )
+
       fielddocumentation = \
           s("{") + (P.Optional(g(kw("key") + identifier + s(";"))) & \
              P.Optional(g(kw("name") + P.QuotedString('"') + s(";"))) & \
              P.Optional(g(kw("unit") + P.QuotedString('"') + s(";"))) & \
-             P.Optional(g(kw("offset") + decimal_constant + s(";"))) & \
-             P.Optional(g(kw("divisor") + decimal_constant + s(";"))) & \
+             P.Optional(g(kw("conversion") + conversion_expr + s(";"))) & \
+             P.Optional(g(kw("inverse") + conversion_expr + s(";"))) & \
+             P.Optional(g(kw("fractional_bits") + decimal_literal + s(";"))) & \
              P.Optional(g(kw("description") + P.QuotedString('"') + s(";"))) \
           ) + s("}")
 
 
-      const_expr_value = constant | scopedidentifier
+      const_expr_value = numeric_literal | scopedidentifier
       constant_expr = (const_expr_value + (kw('+') | kw('-')) + const_expr_value) | const_expr_value
       enum_body = s("{") + g(P.delimitedList(g(enumValueIdentifier + s('=') + constant_expr))) + s(P.Optional(",")) + s("}")
       
       struct_body << s("{") + P.OneOrMore(g(declaration + g(P.Optional(fielddocumentation)) + s(";"))) + s("}")
 
-      constant_def = kw("const") - scopedUpperIdentifier - s("=") - constant - s(";")
+      constant_def = kw("const") - scopedUpperIdentifier - s("=") - numeric_literal - s(";")
       namespace_def = kw("namespace") - identifier - s(";")
       namespace_def.setParseAction(self.namespaceParse)
 
@@ -213,12 +222,25 @@ class Parser:
       """
       return self.specification.parseString(src, parseAll=True).asList()
 
+   def stringify_conversion(self, conv):
+      result = ''
+      for term in conv:
+         if isinstance(term, list):
+            result = result + ' (' + self.stringify_conversion(term) + ')'
+         else:
+            result = result + ' ' + str(term)
+      if len(result) > 0 and result[0] == ' ':
+         return result[1:]
+      return result
+
    def xdr_parse_fielddoc(self, x):
       key = ''
       name = ''
       desc = ''
-      offset = divisor = 0
+      frac_bits = 0
       unit = ''
+      conv = ''
+      inv = ''
       for field in x:
          if field[0] == 'key':
             key = field[1]
@@ -230,13 +252,17 @@ class Parser:
             unit = field[1]
          if field[0] == 'offset':
             offset = field[1]
-         if field[0] == 'divisor':
-            divisor = field[1]
-      return XDRFieldDocumentation(key, name, desc, offset, divisor, unit)
+         if field[0] == 'fractional_bits':
+            frac_bits = int(field[1])
+         if field[0] == 'conversion':
+            conv = self.stringify_conversion(field[1])
+         if field[0] == 'inverse':
+            inv = self.stringify_conversion(field[1])
+      return XDRFieldDocumentation(key, name, desc, frac_bits, conv, inv, unit)
 
    def xdr_parse_declaration(self, x):
       if x[0] == 'void':
-         return XDRDeclaration(None, 'basic', 'void', None, None, True, XDRFieldDocumentation('', '', '', 0, 0, ''))
+         return XDRDeclaration(None, 'basic', 'void', None, None, True, XDRFieldDocumentation('', '', '', 0, '', '', ''))
       elif x[0] == 'opaque' or x[0] == 'string':
          type = x[0]
          name = x[1]

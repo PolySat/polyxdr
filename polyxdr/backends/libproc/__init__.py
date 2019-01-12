@@ -1,6 +1,7 @@
 import os
 import tenjin
 from polyxdr.parser import *
+from collections import namedtuple
 
 type_map = { 'int': { 'type': 'int32_t', 'dec': 'XDR_decode_int32', 'enc':'XDR_encode_int32', 'print': 'XDR_print_field_int32', 'scan': 'XDR_scan_int32', 'dealloc':False, 'id': '0', 'field_dealloc': None, 'field_dealloc_array': 'XDR_array_field_deallocator'}, \
              'unsigned int': { 'type': 'uint32_t', 'dec': 'XDR_decode_uint32', 'enc': 'XDR_encode_uint32', 'print': 'XDR_print_field_uint32', 'scan': 'XDR_scan_uint32', 'dealloc':False, 'id': '0', 'field_dealloc': None, 'field_dealloc_array': 'XDR_array_field_deallocator' }, \
@@ -51,13 +52,19 @@ def setup_types(ir):
          type_map[x.name] = { 'type': 'struct ' + x.name.replace('::','_',400), 'dec':  x.name.replace('::','_',400) + "_decode", \
             'enc':  x.name.replace('::','_',400) + "_encode", 'print': '', 'scan': '', 'dealloc': dealloc, 'deallocator': 'XDR_struct_free_deallocator', 'id': x.id.replace('::','_',400), 'field_dealloc': 'XDR_struct_field_deallocator', 'field_dealloc_array': 'XDR_struct_array_field_deallocator' }
 
-def generateSource(ir, output, namespace, mapping):
+def generateSource(ir, output, namespace, mapping, conversions):
    out = open(output + ".c", 'w')
    render_template(out, "header.c", dict(namespace=namespace,header=output.split('/')[-1] + ".h"))
 
+   for key, x in conversions.items():
+      if x.inverse:
+         render_template(out, "inv-conversion.c", dict(conv=x))
+      else:
+         render_template(out, "fwd-conversion.c", dict(conv=x))
+
    for x in ir:
       if isinstance(x, XDRStruct):
-         render_template(out, "struct-definition.c", dict(st=x,types=type_map,enums=mapping))
+         render_template(out, "struct-definition.c", dict(st=x,types=type_map,enums=mapping,conv=conversions))
 
    for x in ir:
       if isinstance(x, XDRStruct):
@@ -117,15 +124,41 @@ def generateHeader(ir, output, namespace, mapping):
    render_template(out, "footer.h", dict(namespace=namespace))
    out.close()
 
+def consolidate_conversions(ir):
+   conversions = {}
+   number = 0
+   Conv = namedtuple("ConversionFunc", ["bits", "equation", "name", "inverse"])
+   for x in ir:
+      if isinstance(x, XDRStruct):
+         for m in x.members:
+            if m.documentation == None:
+               continue
+            if m.documentation.fractional_bits > 0 or \
+                       m.documentation.conversion != '':
+               key = str(m.documentation.fractional_bits) + ':' + m.documentation.conversion
+               if key not in conversions:
+                  conversions[key] = Conv(m.documentation.fractional_bits, m.documentation.conversion, 'unit_conversion_' + str(number), False)
+                  number += 1
+
+            if m.documentation.fractional_bits > 0 or \
+                       m.documentation.inverse != '':
+               key = m.documentation.inverse + ':' + str(m.documentation.fractional_bits)
+               if key not in conversions:
+                  conversions[key] = Conv(m.documentation.fractional_bits, m.documentation.inverse, 'unit_conversion_' + str(number), True)
+                  number += 1
+
+   return conversions
+
 def generate(ir, output):
 #print(ir)
     namespace = extract_namespace(ir, output, 'IPC')
     mapping = extract_union_mapping(ir, namespace)
     setup_types(ir)
+    conversions = consolidate_conversions(ir);
 #print(type_map)
 
     generateHeader(ir, output, namespace, mapping)
-    generateSource(ir, output, namespace, mapping)
+    generateSource(ir, output, namespace, mapping, conversions)
 
 def render_template(out, name, context):
 #print(context)
