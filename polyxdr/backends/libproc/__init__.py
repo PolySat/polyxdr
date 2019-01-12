@@ -97,8 +97,8 @@ def generateHeader(ir, output, namespace, mapping):
       out.write('#include "xdr.h"\n')
       out.write('#include "cmd.h"\n')
    else:
-      out.write("#include <polysat/xdr.h>\n")
-      out.write("#include <polysat/cmd.h>\n")
+      out.write("#include <polysat3/xdr.h>\n")
+      out.write("#include <polysat3/cmd.h>\n")
    out.write("#include <stdint.h>\n\n")
 
    for x in ir:
