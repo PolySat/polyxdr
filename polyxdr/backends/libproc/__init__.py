@@ -3,16 +3,17 @@ import tenjin
 from polyxdr.parser import *
 from collections import namedtuple
 
-type_map = { 'int': { 'type': 'int32_t', 'dec': 'XDR_decode_int32', 'enc':'XDR_encode_int32', 'print': 'XDR_print_field_int32', 'scan': 'XDR_scan_int32', 'dealloc':False, 'id': '0', 'field_dealloc': None, 'field_dealloc_array': 'XDR_array_field_deallocator'}, \
-             'unsigned int': { 'type': 'uint32_t', 'dec': 'XDR_decode_uint32', 'enc': 'XDR_encode_uint32', 'print': 'XDR_print_field_uint32', 'scan': 'XDR_scan_uint32', 'dealloc':False, 'id': '0', 'field_dealloc': None, 'field_dealloc_array': 'XDR_array_field_deallocator' }, \
-             'char': { 'type': 'int32_t', 'dec': 'XDR_decode_int32', 'enc': 'XDR_encode_int32', 'print': 'XDR_print_field_char', 'scan': 'XDR_scan_char', 'dealloc':False, 'id': '0', 'field_dealloc': None, 'field_dealloc_array': 'XDR_array_field_deallocator' }, \
-             'float': { 'type': 'float', 'dec': 'XDR_decode_float', 'enc': 'XDR_encode_float', 'print': 'XDR_print_field_float', 'scan': 'XDR_scan_float', 'dealloc':False, 'id': '0', 'field_dealloc': None, 'field_dealloc_array': 'XDR_array_field_deallocator' }, \
-             'double': { 'type': 'double', 'dec': 'XDR_decode_double', 'enc': 'XDR_encode_double', 'print': 'XDR_print_field_double', 'scan': 'XDR_scan_double', 'dealloc':False, 'id': '0', 'field_dealloc': None, 'field_dealloc_array': 'XDR_array_field_deallocator' }, \
-             'void': { 'type': 'uint32_t', 'dec': 'XDR_decode_uint32', 'enc': 'XDR_encode_uint32', 'print': 'XDR_print_field_uint32', 'scan': 'XDR_scan_uint32', 'dealloc':False, 'id': '0', 'field_dealloc': None, 'field_dealloc_array': None }, \
-             'hyper': { 'type': 'int64_t', 'dec': 'XDR_decode_int64', 'enc': 'XDR_encode_int64', 'print': 'XDR_print_field_int64', 'scan': 'XDR_scan_int64', 'dealloc':False, 'id': '0', 'field_dealloc': None, 'field_dealloc_array': 'XDR_array_field_deallocator'}, \
-             'unsigned hyper': { 'type': 'uint64_t', 'dec': 'XDR_decode_uint64', 'enc': 'XDR_encode_uint64', 'print': 'XDR_print_field_uint64', 'scan': 'XDR_scan_uint64', 'dealloc':False, 'id': '0', 'field_dealloc': None, 'field_dealloc_array': 'XDR_array_field_deallocator' }, \
-             'string': { 'type': 'char', 'dec': 'XDR_decode_string', 'enc': 'XDR_encode_string', 'print': 'XDR_print_field_string', 'scan': 'XDR_scan_string', 'dealloc':True, 'deallocator': 'XDR_dealloc_string', 'id': '0', 'field_dealloc': None, 'field_dealloc_array': None }, \
-             'opaque': { 'type': 'char', 'dec': 'XDR_decode_byte', 'enc': 'XDR_encode_byte', 'print': 'XDR_print_field_byte', 'scan': 'XDR_scan_byte', 'dealloc':True, 'deallocator': 'XDR_dealloc_byte', 'id': '0', 'field_dealloc': None, 'field_dealloc_array': 'XDR_array_field_deallocator' }, \
+type_map = { 'int': { 'type': 'int32_t', 'funcs': 'xdr_int32_functions', 'arr_funcs': 'xdr_int32_arr_functions', 'bit_funcs': 'xdr_int32_bitfield_functions', 'dealloc':False, 'id': '0' }, \
+             'unsigned int': { 'type': 'uint32_t', 'funcs': 'xdr_uint32_functions', 'arr_funcs': 'xdr_uint32_arr_functions', 'bit_funcs': 'xdr_uint32_bitfield_functions', 'dealloc':False, 'id': '0' }, \
+             'bool': { 'type': 'uint32_t', 'funcs': 'xdr_uint32_functions', 'arr_funcs': 'xdr_uint32_arr_functions', 'bit_funcs': 'xdr_uint32_bitfield_functions', 'dealloc':False, 'id': '0' }, \
+             'char': { 'type': 'int32_t', 'funcs': 'xdr_char_functions', 'arr_funcs': 'xdr_char_arr_functions', 'dealloc':False, 'id': '0' }, \
+             'float': { 'type': 'float', 'funcs': 'xdr_float_functions', 'arr_funcs': 'xdr_float_arr_functions', 'dealloc':False, 'id': '0' }, \
+             'double': { 'type': 'double', 'funcs': 'xdr_double_functions', 'arr_funcs': 'xdr_double_arr_functions', 'dealloc':False, 'id': '0' }, \
+             'void': { 'type': 'uint32_t', 'funcs': 'xdr_uint32_functions', 'arr_funcs': 'xdr_uint32_arr_functions', 'dealloc':False, 'id': '0' }, \
+             'hyper': { 'type': 'int64_t', 'funcs': 'xdr_int64_functions', 'arr_funcs': 'xdr_int64_arr_functions', 'dealloc':False, 'id': '0' }, \
+             'unsigned hyper': { 'type': 'uint64_t', 'funcs': 'xdr_uint64_functions', 'arr_funcs': 'xdr_uint64_arr_functions', 'dealloc':False, 'id': '0' }, \
+             'string': { 'type': 'char', 'funcs': 'xdr_string_functions', 'arr_funcs': 'xdr_string_arr_functions', 'dealloc':True, 'deallocator': 'XDR_dealloc_string', 'id': '0' }, \
+             'opaque': { 'type': 'char', 'funcs': '', 'arr_funcs': 'xdr_byte_arr_functions', 'dealloc':True, 'deallocator': 'XDR_dealloc_byte', 'id': '0' }, \
            }
 
 def extract_namespace(ir, default, prefix):
@@ -39,18 +40,20 @@ def extract_union_mapping(ir, namespace):
 def setup_types(ir):
    for x in ir:
       if isinstance(x, XDRUnion):
-         type_map[x.name] = { 'type': 'struct XDR_Union', 'dec': 'XDR_decode_union', 'enc': 'XDR_encode_union', 'print': '', 'scan': '', 'dealloc': True, 'deallocator': 'XDR_dealloc_union', 'id': '0', 'field_dealloc': 'XDR_union_field_deallocator', 'field_dealloc_array': 'XDR_union_array_field_deallocator' }
+         type_map[x.name] = { 'type': 'struct XDR_Union', 'funcs': 'xdr_union_functions', 'arr_funcs': 'xdr_union_functions', 'dealloc': True, 'deallocator': 'XDR_dealloc_union', 'id': '0' }
       elif isinstance(x, XDREnum):
-         type_map[x.name] = { 'type': 'uint32_t', 'dec': 'XDR_decode_uint32', 'enc': 'XDR_encode_uint32', 'print': 'XDR_print_field_uint32', 'scan': 'XDR_scan_uint32', 'dealloc': False, 'id': '0', 'field_dealloc': None, 'field_dealloc_array': 'XDR_array_field_deallocator' }
-      elif isinstance(x, XDRStruct):
+         type_map[x.name] = { 'type': 'uint32_t', 'funcs': 'xdr_uint32_functions', 'arr_funcs': 'xdr_uint32_arr_functions', 'bit_funcs': 'xdr_uint32_functions', 'dealloc': False, 'id': '0' }
+      elif isinstance(x, XDRStruct) or isinstance(x, XDRBitfield):
          dealloc = False;
          deallocator = 'XDR_free_deallocator'
          for m in x.members:
-            dealloc = dealloc or type_map[m.type]['dealloc']
+            if isinstance(m, XDRDeclaration):
+               dealloc = dealloc or type_map[m.type]['dealloc']
          if dealloc:
             deallocator = x.name.replace('::','_',400) + "_dealloc"
-         type_map[x.name] = { 'type': 'struct ' + x.name.replace('::','_',400), 'dec':  x.name.replace('::','_',400) + "_decode", \
-            'enc':  x.name.replace('::','_',400) + "_encode", 'print': '', 'scan': '', 'dealloc': dealloc, 'deallocator': 'XDR_struct_free_deallocator', 'id': x.id.replace('::','_',400), 'field_dealloc': 'XDR_struct_field_deallocator', 'field_dealloc_array': 'XDR_struct_array_field_deallocator' }
+         type_map[x.name] = { 'type': 'struct ' + x.name.replace('::','_',400), 'funcs':  x.name.replace('::','_',400) + "_functions", \
+            'arr_funcs':  x.name.replace('::','_',400) + "_arr_functions", \
+            'dealloc': dealloc, 'deallocator': 'XDR_struct_free_deallocator', 'id': x.id.replace('::','_',400) }
 
 def generateSource(ir, output, namespace, mapping, conversions):
    out = open(output + ".c", 'w')
@@ -63,12 +66,22 @@ def generateSource(ir, output, namespace, mapping, conversions):
          render_template(out, "fwd-conversion.c", dict(conv=x))
 
    for x in ir:
+      if isinstance(x, XDRBitfield):
+         render_template(out, "bitfield-functions.c", dict(bf=x,types=type_map,enums=mapping,conv=conversions))
+      if isinstance(x, XDRStruct):
+         render_template(out, "struct-functions.c", dict(st=x,types=type_map,enums=mapping,conv=conversions))
+
+   for x in ir:
       if isinstance(x, XDRStruct):
          render_template(out, "struct-definition.c", dict(st=x,types=type_map,enums=mapping,conv=conversions))
+      if isinstance(x, XDRBitfield):
+         render_template(out, "bitfield-definition.c", dict(bf=x,types=type_map,enums=mapping,conv=conversions))
 
    for x in ir:
       if isinstance(x, XDRStruct):
          render_template(out, "encoders.c", dict(st=x,types=type_map,enums=mapping))
+      if isinstance(x, XDRBitfield):
+         render_template(out, "bitfield-encoders.c", dict(st=x,types=type_map,enums=mapping))
 
    for x in ir:
       if isinstance(x, XDRCommand):
@@ -87,7 +100,7 @@ def generateSource(ir, output, namespace, mapping, conversions):
 
    render_template(out, "register.c", dict(namespace=namespace))
    for x in ir:
-      if isinstance(x, XDRStruct):
+      if isinstance(x, XDRStruct) or isinstance(x, XDRBitfield):
          render_template(out, "register-struct.c", dict(st=x))
    repl = 1;
    if namespace == "IPC":
@@ -115,11 +128,17 @@ def generateHeader(ir, output, namespace, mapping):
       if isinstance(x, XDREnum):
          render_template(out, "enum.h", dict(enum=x,types=type_map))
    for x in ir:
+      if isinstance(x, XDRBitfield):
+         render_template(out, "bitfield.h", dict(st=x,types=type_map))
+   for x in ir:
       if isinstance(x, XDRStruct):
          render_template(out, "struct.h", dict(st=x,types=type_map))
    for x in ir:
       if isinstance(x, XDRStruct):
          render_template(out, "prototypes.h", dict(st=x,types=type_map))
+   for x in ir:
+      if isinstance(x, XDRBitfield):
+         render_template(out, "prototypes-bitfield.h", dict(st=x,types=type_map))
 
    render_template(out, "footer.h", dict(namespace=namespace))
    out.close()
@@ -128,23 +147,24 @@ def consolidate_conversions(ir):
    conversions = {}
    number = 0
    Conv = namedtuple("ConversionFunc", ["bits", "equation", "name", "inverse"])
+   docs = []
    for x in ir:
-      if isinstance(x, XDRStruct):
+      if isinstance(x, XDRStruct) or isinstance(x, XDRBitfield):
          for m in x.members:
             if m.documentation == None:
                continue
-            if m.documentation.fractional_bits > 0 or \
-                       m.documentation.conversion != '':
-               key = str(m.documentation.fractional_bits) + ':' + m.documentation.conversion
+
+            doc = m.documentation
+            if doc.fractional_bits > 0 or doc.conversion != '':
+               key = str(doc.fractional_bits) + ':' + doc.conversion
                if key not in conversions:
-                  conversions[key] = Conv(m.documentation.fractional_bits, m.documentation.conversion, 'unit_conversion_' + str(number), False)
+                  conversions[key] = Conv(doc.fractional_bits, doc.conversion, 'unit_conversion_' + str(number), False)
                   number += 1
 
-            if m.documentation.fractional_bits > 0 or \
-                       m.documentation.inverse != '':
-               key = m.documentation.inverse + ':' + str(m.documentation.fractional_bits)
+            if doc.fractional_bits > 0 or doc.inverse != '':
+               key = doc.inverse + ':' + str(doc.fractional_bits)
                if key not in conversions:
-                  conversions[key] = Conv(m.documentation.fractional_bits, m.documentation.inverse, 'unit_conversion_' + str(number), True)
+                  conversions[key] = Conv(doc.fractional_bits, doc.inverse, 'unit_conversion_' + str(number), True)
                   number += 1
 
    return conversions
@@ -155,7 +175,8 @@ def generate(ir, output):
     mapping = extract_union_mapping(ir, namespace)
     setup_types(ir)
     conversions = consolidate_conversions(ir);
-#print(type_map)
+#    for x in type_map:
+#       print(x)
 
     generateHeader(ir, output, namespace, mapping)
     generateSource(ir, output, namespace, mapping, conversions)

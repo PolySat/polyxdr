@@ -7,7 +7,8 @@ This file is intended to be imported as "from xdr.ir import *".
 from collections import namedtuple
 
 XDRStruct = namedtuple("XDRStruct", ["name", "members", "id"])
-XDRDeclaration = namedtuple("XDRDeclaration", ["name", "kind", "type", "length", "length_type", "length_const", "documentation"])
+XDRDeclaration = namedtuple("XDRDeclaration", ["name", "kind", "type", "length", "length_type", "length_const", "documentation", "bit_length", "type_name"])
+XDRBitfield = namedtuple("XDRBitfield", ["name", "id", "members", "type"]);
 XDREnum = namedtuple("XDREnum", ["name", "members"])
 XDREnumMember = namedtuple("XDREnumMember", ["name", "value"])
 XDRConst = namedtuple("XDRConst", ["name", "value"])
@@ -21,6 +22,6 @@ XDRError = namedtuple("XDRError", ["id", "name", "description"])
 
 __all__ = [
     'XDRStruct', 'XDRDeclaration', 'XDREnum', 'XDREnumMember',
-    'XDRConst', 'XDRTypedef', 'XDRUnion', 'XDRUnionMember',
+    'XDRConst', 'XDRTypedef', 'XDRUnion', 'XDRUnionMember', 'XDRBitfield',
     'XDRNamespace', 'XDRFieldDocumentation', 'XDRCommand', 'XDRError'
 ]

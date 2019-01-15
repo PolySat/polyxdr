@@ -38,6 +38,7 @@ class Parser:
       return self.namespace + t[0]
 
    def scopeIdentDecl(self, t):
+      self.structNamespace = self.namespace + t[0].upper() + '::'
       self.scopeMap[t[0].lower()] = self.namespace + t[0]
       return self.namespace + t[0]
 
@@ -57,6 +58,7 @@ class Parser:
       return t[0]
 
    def newStruct(self, t):
+      #self.structNamespace = t[1].upper() + '::'
       self.scopeMap[t[1].split('::')[-1].lower()] = t[1]
 
    def resolveIdentStr(self, ident):
@@ -66,6 +68,10 @@ class Parser:
          raise NameError(ident + ' undefined')
       else:
          return self.parent.resolveIdentStr(ident)
+
+   def bitfieldStart(self, t):
+      self.scopeMap[t[0].lower()] = self.structNamespace + t[0].upper()
+      return [t[0], self.structNamespace + t[0].upper() + '::BITFIELD' ]
 
    def resolveIdent(self, t):
       return self.resolveIdentStr(t[0].lower())
@@ -102,6 +108,9 @@ class Parser:
 
       resolvedIdentifier = P.Combine(identifier -  P.ZeroOrMore('::' + identifier))
       resolvedIdentifier.setParseAction(self.resolveIdent)
+
+      bitfieldIdentifier = P.Word(P.alphanums, P.alphanums + '_')
+      bitfieldIdentifier.setParseAction(self.bitfieldStart)
 
       type_name = P.Combine(identifier -  P.OneOrMore('::' + identifier))
       type_name.setParseAction(self.resolveIdent)
@@ -141,17 +150,11 @@ class Parser:
           kw("char") | \
           scopedidentifier
 
-      declaration = \
-          kw("void") | \
-          kw("opaque") + identifier + lit("[") + value + lit("]") | \
-          kw("opaque") + identifier + lit("<") + P.Optional(value) + lit(">") | \
-          kw("string") + identifier + lit("<") + P.Optional(value) + lit(">") | \
-          g(resolved_type_specifier) + identifier + lit("[") + value + lit("]") | \
-          g(resolved_type_specifier) + identifier + lit("<") + P.Optional(value) + lit(">") | \
-          g(resolved_type_specifier) + identifier | \
-          g(resolved_type_specifier) + lit('*') + identifier
+      bitfield_declaration = \
+          g(P.Optional(kw("unsigned")) + kw("int")) + identifier + s(":") + numeric_literal | \
+          g(kw("bool")) + identifier | \
+          g(resolved_type_specifier) + identifier + s(":") + numeric_literal
 
-      
       conversion_expr = P.operatorPrecedence( kw("val") | \
             P.pyparsing_common.fnumber, \
           [(P.oneOf('+ -'), 1, P.opAssoc.RIGHT), \
@@ -169,12 +172,28 @@ class Parser:
              P.Optional(g(kw("description") + P.QuotedString('"') + s(";"))) \
           ) + s("}")
 
+      bitfield_member = bitfield_declaration + g(P.Optional(fielddocumentation))
 
+      declaration = \
+          kw("void") | \
+          kw("opaque") + identifier + lit("[") + value + lit("]") | \
+          kw("opaque") + identifier + lit("<") + P.Optional(value) + lit(">") | \
+          kw("string") + identifier + lit("<") + P.Optional(value) + lit(">") | \
+          g(kw("bitfield")) + bitfieldIdentifier + s("{") + g(P.OneOrMore(g(bitfield_member) + s(";")))+ s("}") + P.Optional(s('=') - type_name) | \
+          g(resolved_type_specifier) + identifier + lit("[") + value + lit("]") | \
+          g(resolved_type_specifier) + identifier + lit("<") + P.Optional(value) + lit(">") | \
+          g(resolved_type_specifier) + identifier | \
+          g(resolved_type_specifier) + lit('*') + identifier
+
+      
       const_expr_value = numeric_literal | scopedidentifier
       constant_expr = (const_expr_value + (kw('+') | kw('-')) + const_expr_value) | const_expr_value
       enum_body = s("{") + g(P.delimitedList(g(enumValueIdentifier + s('=') + constant_expr))) + s(P.Optional(",")) + s("}")
+
+      struct_member = \
+          g(declaration + g(P.Optional(fielddocumentation)) + s(";"))
       
-      struct_body << s("{") + P.OneOrMore(g(declaration + g(P.Optional(fielddocumentation)) + s(";"))) + s("}")
+      struct_body << s("{") + P.OneOrMore(struct_member) + s("}")
 
       constant_def = kw("const") - scopedUpperIdentifier - s("=") - numeric_literal - s(";")
       namespace_def = kw("namespace") - identifier - s(";")
@@ -262,7 +281,7 @@ class Parser:
 
    def xdr_parse_declaration(self, x):
       if x[0] == 'void':
-         return XDRDeclaration(None, 'basic', 'void', None, None, True, XDRFieldDocumentation('', '', '', 0, '', '', ''))
+         return XDRDeclaration(None, 'basic', 'void', None, None, True, XDRFieldDocumentation('', '', '', 0, '', '', ''), 0, 'void')
       elif x[0] == 'opaque' or x[0] == 'string':
          type = x[0]
          name = x[1]
@@ -291,12 +310,13 @@ class Parser:
          if type == 'string':
             length_type = 'variable'
 
-         return XDRDeclaration(name, kind, type, length, length_type, length_const, docs)
+         return XDRDeclaration(name, kind, type, length, length_type, length_const, docs, 0, type)
       else:
          name = x[1]
          docidx = 2
          kind = 'basic'
          type = ' '.join(x[0])
+         bitlen = 0
          length = None
          if name == '*':
             name = x[2]
@@ -312,10 +332,32 @@ class Parser:
             if length == '>':
                length = None
                docidx = 4
+
+         if isinstance(x[2], int):
+            bitlen = x[2]
+         if type == 'bool':
+            bitlen = 1
+
+         type_name = type
+         if type == 'bitfield':
+            kind = 'bitfield'
+            type = 'unsigned int'
+            type = type_name = x[2]
+            docidx = 4
+            idstr = ''
+            if len(x) > docidx:
+               if isinstance(x[docidx], str):
+                  idstr = x[docidx]
+                  docidx += 1
+            strDef = XDRBitfield(type_name, idstr, [self.xdr_parse_declaration(y) for y in x[3]], '')
+            self.bitfield_decls = self.bitfield_decls + [strDef]
                 
          doc = None
          if len(x) > docidx:
-            doc = self.xdr_parse_fielddoc(x[docidx])
+            if isinstance(x[docidx], int):
+               docidx += 1
+            if len(x) > docidx:
+               doc = self.xdr_parse_fielddoc(x[docidx])
          if length == None:
             length_type = ''
             length_const = True
@@ -327,7 +369,7 @@ class Parser:
             except:
                length_type = 'variable'
                length_const = False
-         return XDRDeclaration(name, kind, type, length, length_type, length_const, doc)
+         return XDRDeclaration(name, kind, type, length, length_type, length_const, doc, bitlen, type_name)
 
    def xdr_parse_definition(self, x):
       if x[0] == 'namespace':
@@ -388,7 +430,10 @@ class Parser:
 #print(self.scopeMap)
       ir = []
       for x in ast:
-         ir = ir + self.xdr_parse_definition(x)
-#      print(ir)
+         self.bitfield_decls = []
+         decls = self.xdr_parse_definition(x)
+         ir = ir + self.bitfield_decls + decls
+#      for x in ir:
+#         print(x)
       return ir
 
