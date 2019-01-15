@@ -120,6 +120,10 @@ def generateHeader(ir, output, namespace, mapping):
       out.write("#include <polysat3/xdr.h>\n")
       out.write("#include <polysat3/cmd.h>\n")
    out.write("#include <stdint.h>\n\n")
+   out.write("#ifdef __cplusplus\n")
+   out.write('extern "C" {\n')
+   out.write("#endif\n\n")
+
 
    for x in ir:
       if isinstance(x, XDRConst):
