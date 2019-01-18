@@ -12,8 +12,8 @@ type_map = { 'int': { 'type': 'int32_t', 'funcs': 'xdr_int32_functions', 'arr_fu
              'void': { 'type': 'uint32_t', 'funcs': 'xdr_uint32_functions', 'arr_funcs': 'xdr_uint32_arr_functions', 'dealloc':False, 'id': '0' }, \
              'hyper': { 'type': 'int64_t', 'funcs': 'xdr_int64_functions', 'arr_funcs': 'xdr_int64_arr_functions', 'dealloc':False, 'id': '0' }, \
              'unsigned hyper': { 'type': 'uint64_t', 'funcs': 'xdr_uint64_functions', 'arr_funcs': 'xdr_uint64_arr_functions', 'dealloc':False, 'id': '0' }, \
-             'string': { 'type': 'char', 'funcs': 'xdr_string_functions', 'arr_funcs': 'xdr_string_arr_functions', 'dealloc':True, 'deallocator': 'XDR_dealloc_string', 'id': '0' }, \
-             'opaque': { 'type': 'char', 'funcs': '', 'arr_funcs': 'xdr_byte_arr_functions', 'dealloc':True, 'deallocator': 'XDR_dealloc_byte', 'id': '0' }, \
+             'string': { 'type': 'const char', 'funcs': 'xdr_string_functions', 'arr_funcs': 'xdr_string_arr_functions', 'dealloc':True, 'deallocator': 'XDR_dealloc_string', 'id': '0' }, \
+             'opaque': { 'type': 'const char', 'funcs': '', 'arr_funcs': 'xdr_byte_arr_functions', 'dealloc':True, 'deallocator': 'XDR_dealloc_byte', 'id': '0' }, \
            }
 
 def extract_namespace(ir, default, prefix):
