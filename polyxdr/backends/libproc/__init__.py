@@ -84,6 +84,10 @@ def generateSource(ir, output, namespace, mapping, conversions):
          render_template(out, "bitfield-encoders.c", dict(st=x,types=type_map,enums=mapping))
 
    for x in ir:
+      if isinstance(x, XDRStruct):
+         render_template(out, "printers.c", dict(st=x,types=type_map,enums=mapping))
+
+   for x in ir:
       if isinstance(x, XDRCommand):
          render_template(out, "command-types.c", dict(cmd=x,types=type_map,enums=mapping))
    render_template(out, "command-header.c", dict(ns=namespace))
