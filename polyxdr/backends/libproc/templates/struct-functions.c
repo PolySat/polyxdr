@@ -7,6 +7,7 @@ struct XDR_TypeFunctions ${st.name.replace('::','_',400)}_functions = {
 struct XDR_TypeFunctions ${st.name.replace('::','_',400)}_arr_functions = {
    (XDR_Decoder)&${st.name.replace('::','_',400)}_decode_array,
    (XDR_Encoder)&${st.name.replace('::','_',400)}_encode_array,
-   NULL, NULL, &XDR_struct_array_field_deallocator
+   &${st.name.replace('::','_',400)}_print_array, NULL,
+   &XDR_struct_array_field_deallocator
 };
 
