@@ -1,0 +1,6 @@
+<SENSOR>
+   KEY=${doc.key}
+   UNIT=${doc.unit}
+   NAME=${doc.name}
+   DESCRIPTION=${doc.description}
+</SENSOR>
