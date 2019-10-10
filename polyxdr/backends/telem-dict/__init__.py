@@ -3,7 +3,7 @@ import tenjin
 from polyxdr.parser import *
 from collections import namedtuple
 
-def generateHeader(ir, out, parent, type_filter):
+def generateHeader(ir, out, parent, p_unit, p_name, type_filter):
 
 #      if isinstance(x, XDRStruct) or isinstance(x, XDRBitfield):
    for x in ir:
@@ -22,10 +22,21 @@ def generateHeader(ir, out, parent, type_filter):
                key = doc.key
             else:
                key = parent + '_' + doc.key
-#print(doc)
-            render_template(out, "struct", dict(st=x,doc=doc,key=key))
+
+            unit = p_unit
+            if p_unit == None or doc.unit != '':
+               unit = doc.unit
+
+            name = p_name
+            if p_name == None:
+               name = doc.name
+            else:
+               if doc.name != '':
+                  name = p_name + ': ' + doc.name
+            #print(doc)
+            render_template(out, "struct", dict(st=x,doc=doc,key=key,unit=unit,name=name))
             if "::" in m.type_name:
-               generateHeader(ir, out, key, m.type_name)
+               generateHeader(ir, out, key, unit, name, m.type_name)
                
 
 #   for x in ir:
@@ -41,7 +52,7 @@ def generateHeader(ir, out, parent, type_filter):
 def generate(ir, output):
 #    print(ir)
     out = open(output, 'w')
-    generateHeader(ir, out, None, None)
+    generateHeader(ir, out, None, None, None, None)
     out.close()
 
 def render_template(out, name, context):
