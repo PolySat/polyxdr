@@ -13,8 +13,8 @@ config = {
     'author_email': 'cubesat@cubesat.org',
     'version': '0.1',
     'install_requires': ['nose', 'tenjin', 'pyparsing'],
-    'packages': ['polyxdr', 'polyxdr/backends', 'polyxdr/backends/xp', 'polyxdr/backends/libproc', 'polyxdr/backends/telem-dict'],
-    'package_data': {'polyxdr': ['backends/libproc/templates/*.c', 'backends/libproc/templates/*.h', 'backends/xp/templates/*.xp']},
+    'packages': ['polyxdr', 'polyxdr/backends', 'polyxdr/backends/xp', 'polyxdr/backends/libproc'],
+    'package_data': { 'polyxdr': ['backends/libproc/templates/*.c', 'backends/libproc/templates/*.h', 'backends/xp/templates/*.xp'] },
     'scripts': ['poly-xdrgen']
 }
 
