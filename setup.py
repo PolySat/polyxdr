@@ -14,7 +14,7 @@ config = {
     'version': '0.1',
     'install_requires': ['nose', 'tenjin', 'pyparsing'],
     'packages': ['polyxdr', 'polyxdr/backends', 'polyxdr/backends/xp', 'polyxdr/backends/libproc', 'polyxdr/backends/telem-dict'],
-    'package_data': {'polyxdr': ['backends/libproc/templates/*.c', 'backends/libproc/templates/*.h', 'backends/xp/templates/*.xp']},
+    'package_data': {'polyxdr': ['backends/libproc/templates/*.c', 'backends/libproc/templates/*.h', 'backends/xp/templates/*.xp', 'backends/telem-dict/templates/s*']},
     'scripts': ['poly-xdrgen']
 }
 
