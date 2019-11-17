@@ -195,4 +195,6 @@ def render_template(out, name, context):
     pp = [ tenjin.PrefixedLinePreprocessor() ] # support "::" syntax
     template_globals = { "to_str": str, "escape": str } # disable HTML escaping
     engine = tenjin.Engine(path=path, pp=pp, cache=tenjin.MemoryCacheStorage())
+    if name == "enum.h":
+        print(engine.render(name, context, template_globals))
     out.write(engine.render(name, context, template_globals))
