@@ -2,8 +2,8 @@
 :: if namespace == 'IPC':
 #include "cmd.h"
 :: else:
-#include <polysat3/cmd.h>
-#include <polysat3/cmd-pkt.h>
+#include <polysat/cmd.h>
+#include <polysat/cmd-pkt.h>
 :: #endif
 #include "${header}"
 

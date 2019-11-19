@@ -4,15 +4,24 @@ from polyxdr.parser import *
 from collections import namedtuple
 
 type_map = { 'int': { 'type': 'int32_t', 'funcs': 'xdr_int32_functions', 'arr_funcs': 'xdr_int32_arr_functions', 'bit_funcs': 'xdr_int32_bitfield_functions', 'dealloc':False, 'id': '0' }, \
+             'dictionary int': { 'type': 'struct XDR_Dictionary', 'funcs': 'xdr_int32_dict_functions', 'arr_funcs': '', 'bit_funcs': '', 'dealloc':False, 'id': '0' }, \
              'unsigned int': { 'type': 'uint32_t', 'funcs': 'xdr_uint32_functions', 'arr_funcs': 'xdr_uint32_arr_functions', 'bit_funcs': 'xdr_uint32_bitfield_functions', 'dealloc':False, 'id': '0' }, \
+             'dictionary unsigned int': { 'type': 'struct XDR_Dictionary', 'funcs': 'xdr_uint32_dict_functions', 'arr_funcs': '', 'bit_funcs': '', 'dealloc':False, 'id': '0' }, \
              'bool': { 'type': 'uint32_t', 'funcs': 'xdr_uint32_functions', 'arr_funcs': 'xdr_uint32_arr_functions', 'bit_funcs': 'xdr_uint32_bitfield_functions', 'dealloc':False, 'id': '0' }, \
+             'dictionary bool': { 'type': 'struct XDR_Dictionary', 'funcs': 'xdr_uint32_dict_functions', 'arr_funcs': '', 'bit_funcs': '', 'dealloc':False, 'id': '0' }, \
              'char': { 'type': 'int32_t', 'funcs': 'xdr_char_functions', 'arr_funcs': 'xdr_char_arr_functions', 'dealloc':False, 'id': '0' }, \
+             'dictionary char': { 'type': 'struct XDR_Dictionary', 'funcs': 'xdr_char_dict_functions', 'arr_funcs': '', 'dealloc':False, 'id': '0' }, \
              'float': { 'type': 'float', 'funcs': 'xdr_float_functions', 'arr_funcs': 'xdr_float_arr_functions', 'dealloc':False, 'id': '0' }, \
+             'dictionary float': { 'type': 'struct XDR_Dictionary', 'funcs': 'xdr_float_functions', 'arr_funcs': '', 'dealloc':False, 'id': '0' }, \
              'double': { 'type': 'double', 'funcs': 'xdr_double_functions', 'arr_funcs': 'xdr_double_arr_functions', 'dealloc':False, 'id': '0' }, \
+             'dictionary double': { 'type': 'struct XDR_Dictionary', 'funcs': 'xdr_double_functions', 'arr_funcs': '', 'dealloc':False, 'id': '0' }, \
              'void': { 'type': 'uint32_t', 'funcs': 'xdr_uint32_functions', 'arr_funcs': 'xdr_uint32_arr_functions', 'dealloc':False, 'id': '0' }, \
              'hyper': { 'type': 'int64_t', 'funcs': 'xdr_int64_functions', 'arr_funcs': 'xdr_int64_arr_functions', 'dealloc':False, 'id': '0' }, \
+             'dictionary hyper': { 'type': 'struct XDR_Dictionary', 'funcs': 'xdr_int64_dict_functions', 'arr_funcs': '', 'dealloc':False, 'id': '0' }, \
              'unsigned hyper': { 'type': 'uint64_t', 'funcs': 'xdr_uint64_functions', 'arr_funcs': 'xdr_uint64_arr_functions', 'dealloc':False, 'id': '0' }, \
+             'dictionary unsigned hyper': { 'type': 'struct XDR_Dictionary', 'funcs': 'xdr_uint64_dict_functions', 'arr_funcs': '', 'dealloc':False, 'id': '0' }, \
              'string': { 'type': 'const char', 'funcs': 'xdr_string_functions', 'arr_funcs': 'xdr_string_arr_functions', 'dealloc':True, 'deallocator': 'XDR_dealloc_string', 'id': '0' }, \
+             'dictionary string': { 'type': 'struct XDR_Dictionary', 'funcs': 'xdr_string_dict_functions', 'arr_funcs': 'xdr_string_dict_arr_functions', 'dealloc':True, 'deallocator': 'XDR_dealloc_string', 'id': '0' }, \
              'opaque': { 'type': 'char', 'funcs': '', 'arr_funcs': 'xdr_byte_arr_functions', 'dealloc':True, 'deallocator': 'XDR_dealloc_byte', 'id': '0' }, \
            }
 
@@ -121,8 +130,8 @@ def generateHeader(ir, output, namespace, mapping):
       out.write('#include "xdr.h"\n')
       out.write('#include "cmd.h"\n')
    else:
-      out.write("#include <polysat3/xdr.h>\n")
-      out.write("#include <polysat3/cmd.h>\n")
+      out.write("#include <polysat/xdr.h>\n")
+      out.write("#include <polysat/cmd.h>\n")
    out.write("#include <stdint.h>\n\n")
    out.write("#ifdef __cplusplus\n")
    out.write('extern "C" {\n')
