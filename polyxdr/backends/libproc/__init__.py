@@ -177,7 +177,7 @@ def consolidate_conversions(ir):
 
    return conversions
 
-def generate(ir, output):
+def generate(ir, output, location, group):
 #print(ir)
     namespace = extract_namespace(ir, output, 'IPC')
     mapping = extract_union_mapping(ir, namespace)
