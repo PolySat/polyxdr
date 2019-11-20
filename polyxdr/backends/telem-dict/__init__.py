@@ -49,7 +49,7 @@ def generateHeader(ir, out, parent, p_unit, p_name, type_filter):
 #      if isinstance(x, XDRStruct):
 #         render_template(out, "struct", dict(st=x))
 
-def generate(ir, output, location, group):
+def generate(ir, output):
 #    print(ir)
     out = open(output, 'w')
     generateHeader(ir, out, None, None, None, None)

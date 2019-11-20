@@ -30,7 +30,7 @@ def collect_constants(ir):
                 constants[m.name] = m.value
     return constants
 
-def generate(ir, output, location, group):
+def generate(ir, output):
     os.mkdir(output)
     out = open(os.path.join(output, "__init__.py"), 'w')
 
