@@ -63,6 +63,9 @@ def setup_types(ir):
          type_map[x.name] = { 'type': 'struct ' + x.name.replace('::','_',400), 'funcs':  x.name.replace('::','_',400) + "_functions", \
             'arr_funcs':  x.name.replace('::','_',400) + "_arr_functions", \
             'dealloc': dealloc, 'deallocator': 'XDR_struct_free_deallocator', 'id': x.id.replace('::','_',400) }
+         type_map['dictionary ' + x.name] = { 'type': 'struct XDR_Dictionary ', 'funcs':  x.name.replace('::','_',400) + "_dict_functions", \
+            'arr_funcs':  x.name.replace('::','_',400) + "_arr_functions", \
+            'dealloc': dealloc, 'deallocator': 'XDR_dictionary_field_deallocator', 'id': x.id.replace('::','_',400) }
 
 def generateSource(ir, output, namespace, mapping, conversions):
    out = open(output + ".c", 'w')

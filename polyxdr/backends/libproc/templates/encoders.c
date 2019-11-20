@@ -39,3 +39,28 @@ int ${st.name.replace('::','_',400)}_encode_array(
    return 0;
 }
 
+int ${st.name.replace('::','_',400)}_decode_dictionary(char *src,
+      struct XDR_Dictionary *dst, size_t *used,
+      size_t max, void *len)
+{
+   return XDR_dictionary_decoder(src, dst, used, max,
+         (XDR_Decoder)&${st.name.replace('::','_',400)}_decode,
+         sizeof(struct ${st.name.replace('::','_',400)}), NULL);
+}
+
+int ${st.name.replace('::','_',400)}_encode_dictionary(
+      struct XDR_Dictionary *src, char *dst, size_t *used,
+      size_t max, void *len)
+{
+   return XDR_dictionary_encoder(src, dst, used, max,
+         (XDR_Encoder)&${st.name.replace('::','_',400)}_encode,
+         sizeof(struct ${st.name.replace('::','_',400)}), NULL);
+}
+
+void ${st.name.replace('::','_',400)}_print_dictionary(FILE *out, void *data,
+      struct XDR_FieldDefinition *field, enum XDR_PRINT_STYLE style,
+      const char *parent, void *len, int *line, int level)
+{
+   XDR_dictionary_field_printer(out, data, field, style,
+         len, &XDR_print_field_structure, 0, parent, line, level);
+}
