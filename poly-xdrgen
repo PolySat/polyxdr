@@ -9,8 +9,10 @@ from polyxdr.parser import *
 def main():
     parser = argparse.ArgumentParser(description='XDR compiler')
     parser.add_argument("input", metavar="FILE", type=argparse.FileType('r'), help="Input file")
-    parser.add_argument("--target", "-t", required=True, choices=["python", "xp","libproc", "telem-dict"], help="Target language")
+    parser.add_argument("--target", "-t", required=True, choices=["python", "xp","libproc", "telem-dict", "datalogger"], help="Target language")
     parser.add_argument("--output", "-o", metavar="PATH", help="Output directory")
+    parser.add_argument("--location", "-l", metavar="NAME", help="Location help")
+    parser.add_argument("--group", "-g", metavar="NAME", help="Group help")
 
     args = parser.parse_args()
 
@@ -27,7 +29,7 @@ def main():
 
     try:
         backend = importlib.import_module("polyxdr.backends." + args.target)
-        backend.generate(ir, output)
+        backend.generate(ir, output, args.location, args.group)
     except ImportError as e:
         print(e)
         sys.exit("The target %r is not supported" % args.target)
