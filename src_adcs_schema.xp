@@ -1,0 +1,478 @@
+namespace adcs;
+
+const CMD_BASE =       0x200;
+const TYPE_BASE = 0x01000200;
+const ERR_BASE =  0x02000200;
+
+enum types {
+   WHEEL_SPEED = TYPE_BASE + 0,
+   SENSOR_PARAM = TYPE_BASE + 1,
+   STATUS = TYPE_BASE + 2,
+   MAG_DATA = TYPE_BASE + 3,
+   SOL_DATA = TYPE_BASE + 4,
+   MAG_READING = TYPE_BASE + 5,
+   ACTIVE_BITS = TYPE_BASE + 6,
+   SOL_READING = TYPE_BASE + 7,
+   QUATERNION = TYPE_BASE + 8,
+   VECTOR = TYPE_BASE + 9,
+   CHANGE_DYNAMICS = TYPE_BASE + 10,
+   CHANGE_SAS_INTENSITY = TYPE_BASE + 11,
+};
+
+enum Errs {
+   DYNAMICS_ID_INVALID = ERR_BASE + 0,
+};
+
+struct Quaternion {
+   float i {
+      key i;
+      name "i element of quaternion";
+   };
+
+   float j {
+      key j;
+      name "j element of quaternion";
+   };
+
+   float k {
+      key k;
+      name "k element of quaternion";
+   };
+
+   float r {
+      key r;
+      name "r element of quaternion";
+   };
+} = types::QUATERNION;
+
+struct Vector {
+   float x {
+      key x;
+      name "x element of vector";
+   };
+
+   float y {
+      key y;
+      name "y element of vector";
+   };
+
+   float z {
+      key z;
+      name "z element of vector";
+   };
+} = types::VECTOR;
+
+import "classes/controller/ctl_schema.xp";
+import "classes/mission_controller/mission_controller_schema.xp";
+import "classes/determination/determination_schema.xp";
+import "classes/filter/filter_schema.xp";
+import "classes/propagator/propagator_schema.xp";
+import "../simulator/zmq_sensor/zmq_sensor_schema.xp";
+
+enum Cmds {
+   DETAIL = CMD_BASE + 0,
+   RAMP_WHEEL = CMD_BASE + 1,
+   SENSORS_ACTIVE = CMD_BASE + 3,
+   SENSORS_PASSIVE = CMD_BASE + 4,
+   CHANGE_DYNAMICS = CMD_BASE + 8,
+   CHANGE_SAS_INTENSITY = CMD_BASE + 9,
+};
+
+enum Sensor_Type {
+   MAGNETOMETER = 1,
+   SOLAR_ANGLE = 2
+};
+
+struct MagReading {
+   Vector reading {
+      key reading;
+      name "Magnetometer Reading";
+      unit "nT";
+   };
+
+   int sensor_read {
+      key sensor_read;
+      name "Sensor Read";
+      unit "bool";
+      description "True indicates the sensor was read";
+   };
+
+   int ignore {
+      key ignore;
+      name "Ignore";
+      unit "bool";
+      description "True indicates the sensor reading was used in the ADCS determination algorithm";
+   };
+
+   string device_name<128> {
+      key device_name;
+      name "Device Name";
+      description "The name of the magnetometer this reading came from";
+   };
+
+   string device_location<32> {
+      key device_location;
+      name "Device Location";
+      description "The location of the magnetometer this reading came from";
+   };
+} = types::MAG_READING;
+
+struct MagData {
+   unsigned int active_mags {
+      key active_mags;
+      name "Active Mags";
+      unit "bitfield";
+      description "The magnetometers that are read and used by the determination and control system";
+   };
+
+   unsigned int passive_mags {
+      key passive_mags;
+      name "Passive Mags";
+      unit "bitfield";
+      description "The magnetometers that are read, but NOT used, by the determination and control system";
+   };
+
+   MagReading mag_plus_x {
+      key mag_plus_x;
+      name "Plus X Side Panel Magnetometer Reading";
+   };
+
+   MagReading mag_plus_y {
+      key mag_plus_y;
+      name "Plus Y Side Panel Magnetometer Reading";
+   };
+
+   MagReading mag_minus_x {
+      key mag_minus_x;
+      name "Minus X Side Panel Magnetometer Reading";
+   };
+
+   MagReading mag_minus_y {
+      key mag_minus_y;
+      name "Minus Y Side Panel Magnetometer Reading";
+   };
+
+   MagReading mag_minus_z {
+      key mag_minus_z;
+      name "Minus Z Side Panel Magnetometer Reading";
+   };
+
+   MagReading mag_mb {
+      key mag_mb;
+      name "Main Board Magnetometer Reading";
+   };
+
+   MagReading mag_boomM {
+      key mag_boomM;
+      name "BoomM Magnetometer Reading";
+   };
+
+   MagReading mag_boomP {
+      key mag_boomP;
+      name "BoomP Magnetometer Reading";
+   };
+
+} = types::MAG_DATA;
+
+struct SolarReading {
+   Vector reading {
+      key reading;
+      name "Solar Angle Reading";
+      unit "unit vector";
+   };
+
+   int sensor_read {
+      key sensor_read;
+      name "Sensor Read";
+      unit "bool";
+      description "True indicates the sensor was read";
+   };
+
+   int ignore {
+      key ignore;
+      name "Ignore";
+      unit "bool";
+      description "True indicates the sensor reading was ignored in the ADCS determination algorithm";
+   };
+
+   int intensity {
+      key intensity;
+      name "Intensity";
+      description "The relative intensity of the solar angle sensor reading";
+   };
+
+   string device_name<128> {
+      key device_name;
+      name "Device Name";
+      description "The name of the SAS this reading came from";
+   };
+
+   string device_location<32> {
+      key device_location;
+      name "Device Location";
+      description "The location of the SAS this reading came from";
+   };
+} = types::SOL_READING;
+
+struct SolarData {
+   unsigned int active_sols {
+      key active_sols;
+      name "Active Sols";
+      unit "bitfield";
+      description "The solar angle sensors that are read and used by the determination and control system";
+   };
+
+   unsigned int passive_sols {
+      key passive_sols;
+      name "Passive Sols";
+      unit "bitfield";
+      description "The solar angle sensors that are read, but NOT used, by the determination and control system";
+   };
+
+   SolarReading sol_plus_x {
+      key sol_plus_x;
+      name "Plus X Side Panel Solar Reading";
+   };
+
+   SolarReading sol_plus_y {
+      key sol_plus_y;
+      name "Plus Y Side Panel Solar Reading";
+   };
+
+   SolarReading sol_minus_x {
+      key sol_minus_x;
+      name "Minus X Side Panel Solar Reading";
+   };
+
+   SolarReading sol_minus_y {
+      key sol_minus_y;
+      name "Minus Y Side Panel Solar Reading";
+   };
+
+   SolarReading sol_plus_z {
+      key sol_plus_z;
+      name "Plus Z Panel Solar Reading";
+   };
+} = types::SOL_DATA;
+
+struct Status {
+   double epoch {
+      key epoch;
+      name "Epoch Time";
+      description "Current unix epoch time of ADCS";
+   };
+
+   float covariance_trace {
+      key covariance_trace;
+      name "Covariance Trace";
+      description "Trace of the attitude state covariance matrix";
+   };
+
+   float wheel_speed {
+      key wheel_speed;
+      name "Exocube Reaction Wheel Speed";
+      unit "deg/sec";
+      description "Speed of the ExoCube reaction wheel";
+   };
+   
+   float wheel_accel {
+      key wheel_accel;
+      name "ExoCube Reaction Wheel Acceleration";
+      unit "deg/sec^2";
+      description "Acceleration of the ExoCube reacion wheel";
+   };
+
+   int wheel_lifetime_err {
+      key wheel_lifetime_err;
+      name "ExoCube 2 Wheel lifetime errors";
+      unit "int";
+      description "Number of errors over wheel lifetime";
+   };
+
+   Quaternion q_body_eci {
+      key quat_body_eci;
+      name "Attitude Quaternion";
+      unit "Body<-ECI Quaternion";
+      description "Quaternion that transforms from ECI to the spacecraft body frame";
+   };
+
+   Quaternion q_lvlh_eci {
+      key quat_lvlh_eci;
+      name "LVLH Quaternion";
+      unit "LVLH<-ECI Quaternion";
+      description "Quaternion that transforms from ECI to LVLH";
+   };
+
+   Vector ang_vel_body_eci {
+      key ang_vel_body_eci;
+      name "Angular Velocity of Body in ECI";
+      unit "rad/sec";
+      description "Angular velocity of the spacecraft body frame with respect to ECI";
+   };
+
+   Vector meas_mag_body {
+      key meas_mag_body;
+      name "Measured Magnetic Field in Body";
+      unit "nanotesla";
+      description "Magnetic field vector measured by spacecraft and used for determination";
+   };
+
+   Vector meas_sol_body {
+      key meas_sol_body;
+      name "Measured Solar Vector in Body";
+      unit "Unit Vector";
+      description "Solar vector measured by spacecraft and used for determination";
+   };
+
+   Vector ref_mag_body {
+      key ref_mag_body;
+      name "Reference Magnetic Field in Body";
+      unit "Unit Vector";
+      description "Reference magnetic field vector computed using current attitude estimate";
+   };
+
+   Vector ref_sol_body {
+      key ref_sol_body;
+      name "Solar Reference Vector in Body";
+      unit "Unit Vector";
+      description "Reference solar vector computed using current attitude estimate";
+   };
+
+   Vector position_eci {
+      key position_eci;
+      name "ECI Position Vector";
+      unit "meters";
+      description "Current position of spacecraft in ECI";
+   };
+
+   Vector velocity_eci {
+      key velocity_eci;
+      name "ECI Velocity Vector";
+      unit "meters/sec";
+      description "Current velocity of spacecraft in ECI";
+   };
+
+   Vector cntl_mag_mmt {
+      key cntl_mag_mmt;
+      name "Control Magnetic Dipole Moment";
+      unit "amp m^2";
+      description "The magnetic dipole moment being commanded by the control law";
+   };
+
+   Vector cntl_torque {
+      key cntl_torque;
+      name "Control Torque";
+      unit "Nm";
+      description "The torque being commanded by the control law";
+   };
+
+   int dynamics_cfg_id {
+      key dynamics_cfg_id;
+      name "Dynamics Configuration Index";
+      description "The ID of the DYNAMICS configuration entry currently in use";
+   };
+
+   int sas_intensity_cutoff {
+      key sas_intensity_cutoff;
+      name "SAS Cutoff Intensity";
+      description "The minimum SAS intensity required for the sensor to be used";
+   };
+} = types::STATUS;
+
+struct SensorStateParams {
+   Sensor_Type type {
+      key type;
+      description "The type of sensor to update.";
+   };
+   unsigned int bitmask {
+      key bitmask;
+      description "A bitmask of the sensors to operate on.";
+   };
+} = types::SENSOR_PARAM;
+
+struct WheelParams {
+   int speed {
+      key speed;
+      description "The speed to set the wheel to";
+      unit "degrees per second";
+      fractional_bits 8;
+      conversion val / 6;
+   };
+   int accel {
+      key acceleration;
+      description "Acceleration to use when ramping up the wheel.";
+      unit "degrees per second^2";
+      fractional_bits 23;
+   };
+   unsigned int persist {
+      key persist;
+      description "Wheel speed should persist across reboots.";
+      unit "Boolean (0 = no, 1 = yes)";
+   };
+} = types::WHEEL_SPEED;
+
+struct ChangeDynamicsParams {
+   int dynamics_cfg_id {
+      key dynamics_cfg_id;
+      name "DynamicsConfig Index";
+      description "The ID of the DYNAMICS configuration entry";
+   };
+} = types::CHANGE_DYNAMICS;
+
+struct ChangeIntensityParams {
+   int sas_intensity_cutoff {
+      key sas_intensity_cutoff;
+      name "SAS Cutoff Intensity";
+      description "The minimum SAS intensity required for the sensor to be used";
+   };
+} = types::CHANGE_SAS_INTENSITY;
+
+command "adcs-ramp-wheel" {
+   summary "Change the wheel speed.";
+   param types::WHEEL_SPEED;
+} = Cmds::RAMP_WHEEL;
+
+command "adcs-status" {
+   summary "Reports the general health status of the adcs process";
+} = IPC::CMDS::STATUS;
+
+command "adcs-detail" {
+   summary "Reports the detailed health status of the adcs process.  This is larger than the adcs-status report and requires fragmentation.";
+} = Cmds::DETAIL;
+
+command "adcs-change-dynamics" {
+   summary "Change the inertia matrix after deployables are deployed. Specify the ID of the DYNAMICS configuration entry";
+   param types::CHANGE_DYNAMICS;
+} = Cmds::CHANGE_DYNAMICS;
+
+command "adcs-sas-intensity-cutoff" {
+   summary "Change the minimum intensity required for the SAS reading to be used";
+   param types::CHANGE_SAS_INTENSITY;
+} = Cmds::CHANGE_SAS_INTENSITY;
+
+command "adcs-sensors-passive" {
+   summary "Enable/Disable a sensor for passive use. Prevents ADCS from reading the sensor at all.";
+   param types::SENSOR_PARAM;
+} = Cmds::SENSORS_PASSIVE;
+
+command "adcs-sensors-active" {
+   summary "Enable/Disable sensor for active use. Prevents ADCS from using the sensor readings as part of attitude control, but readings are still taken and included in the telemetry streams.";
+   param types::SENSOR_PARAM;
+} = Cmds::SENSORS_ACTIVE;
+
+command "adcs-mag-data" {
+   summary "Contains a full set of magnetometer reading data";
+   types = types::MAG_DATA;
+};
+
+command "adcs-sol-data" {
+   summary "Contains a full set of solar angle reading data";
+   types = types::SOL_DATA;
+};
+
+command "adcs-data" {
+   summary "Contains a full set of solar angle reading data";
+   types = types::STATUS;
+};
+
+error Errs::DYNAMICS_ID_INVALID = "DYNAMICS configuration ID was not found in configuration";
