@@ -176,6 +176,7 @@ class Parser:
 
       declaration = \
           kw("void") | \
+          g(kw("dictionary") + resolved_type_specifier) + identifier | \
           kw("opaque") + identifier + lit("[") + value + lit("]") | \
           kw("opaque") + identifier + lit("<") + P.Optional(value) + lit(">") | \
           kw("string") + identifier + lit("<") + P.Optional(value) + lit(">") | \
