@@ -127,8 +127,8 @@ def generateSource(ir, output, namespace, mapping, conversions):
 
 def generateHeader(ir, output, namespace, mapping):
    out = open(output + ".h", 'w')
-   out.write("#ifndef " + output.split('/')[-1].upper().replace('-','_',400) + "_H\n")
-   out.write("#define " + output.split('/')[-1].upper().replace('-','_',400) + "_H\n\n")
+   out.write("#ifndef " + output.split('/')[-1].upper().replace('-','_',400).replace('.','_',400) + "_H\n")
+   out.write("#define " + output.split('/')[-1].upper().replace('-','_',400).replace('.','_',400) + "_H\n\n")
    if namespace == 'IPC':
       out.write('#include "xdr.h"\n')
       out.write('#include "cmd.h"\n')
