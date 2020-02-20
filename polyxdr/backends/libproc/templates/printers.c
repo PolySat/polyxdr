@@ -20,7 +20,7 @@ void ${st.name.replace('::','_',400)}_dictionary_field_deallocator(void **goner,
 void ${st.name.replace('::','_',400)}_field_deallocator(void **goner,
       struct XDR_FieldDefinition *field)
 {
-   XDR_struct_free_deallocator((void**)&goner,
+   XDR_struct_free_fields((void**)&goner,
          &${st.name.replace('::','_',400)}_Struct);
 }
 
