@@ -1,5 +1,5 @@
-polyxdr (0.1-1) bionic; urgency=low
+polyxdr (0.1-1) linuxmint; urgency=low
 
   * source package automatically created by stdeb 0.8.5
 
- -- PolySat, Rich Lane <cubesat@cubesat.org>  Fri, 21 Feb 2020 14:25:33 -0800
+ -- PolySat, Rich Lane <cubesat@cubesat.org>  Fri, 21 Feb 2020 14:39:19 -0800
