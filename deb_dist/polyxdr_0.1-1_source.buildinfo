@@ -1,17 +1,20 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
 Format: 1.0
 Source: polyxdr
 Binary: python3-polyxdr
 Architecture: source
 Version: 0.1-1
 Checksums-Md5:
- 57f5de135dde5543f704971296163122 862 polyxdr_0.1-1.dsc
+ f3e50de89a3a584af97900e4f2e683aa 1607 polyxdr_0.1-1.dsc
 Checksums-Sha1:
- 81c04c082d22966617eb1280ed1ca2676b135d18 862 polyxdr_0.1-1.dsc
+ 832bed798a51b14c0c34d2419785a330a86ddd70 1607 polyxdr_0.1-1.dsc
 Checksums-Sha256:
- 3354dc0104ff328767b5e1dfb9ffd90f40973c45bec6bfe8701e00697ac5dada 862 polyxdr_0.1-1.dsc
+ d816e4ccdc5e21abb0e9c01a82a8dc525482338fca684db001e2ce70fbd30134 1607 polyxdr_0.1-1.dsc
 Build-Origin: Ubuntu
 Build-Architecture: amd64
-Build-Date: Fri, 21 Feb 2020 12:30:24 -0800
+Build-Date: Fri, 21 Feb 2020 14:25:35 -0800
 Installed-Build-Depends:
  adduser (= 3.116ubuntu1),
  adwaita-icon-theme (= 3.28.0-1ubuntu1),
@@ -389,4 +392,19 @@ Environment:
  LC_PAPER="en_US.UTF-8"
  LC_TELEPHONE="en_US.UTF-8"
  LC_TIME="en_US.UTF-8"
- SOURCE_DATE_EPOCH="1582317022"
+ SOURCE_DATE_EPOCH="1582323933"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQHMBAEBCgA2FiEEZToeMRQUulXbOE0FYXwbRbRlpYUFAl5QWdYYHGJhaWxleXdp
+Y2toYW1AZ21haWwuY29tAAoJEGF8G0W0ZaWFDbcL/1plm6/OgVAUIceHVbgxLJKW
+jd6nO+tt+iV7pZ87QfGujiOc7GWp3jr2sSBWWCRJg3RixDBzihpIWRuSKCXfRzMs
+FOhdXz0yjAtyE/nwsXuw86vDkj8pZ/2Zhykhhbl4W69a7dWIqmQSWKLJ9LPbbNgN
+EHdc6j8Z6lt2K39m8FgJA627RkkXlb1ez2CAjNgkP99qXPswwzD9tuMD7b3EF0iF
+EybqBq4yoJb7zHBzDK8GsV01aoq118TuwFaGRs7Ul6IpAIYTJR0JQJ2nRjaTcDPQ
+alb+3czejOqqky1Psfk8cokTlnis4m3oLEEYEUsKt5RdmJrdFxCL2uNG4Skw80GK
+m+aKSQ20hYUYM+TKpjGTaTOhCinM2FSvISqm+0uaaPXHjZ/pV4wHxe+jqb1UcILf
+RUZts/oE3Oqo37yXryqxI0QIky0JAAHLFn1ZACdHWB+zoGU9aQCJ1BzwH8IRv1CE
+uJrqww1jRB2QDf8i+2xtUZUWv0dLldjfcqpFsyjqxA==
+=8pN9
+-----END PGP SIGNATURE-----

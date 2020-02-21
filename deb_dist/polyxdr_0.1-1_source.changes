@@ -1,31 +1,49 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
 Format: 1.8
-Date: Fri, 21 Feb 2020 12:30:22 -0800
+Date: Fri, 21 Feb 2020 14:25:33 -0800
 Source: polyxdr
 Binary: python3-polyxdr
 Architecture: source
 Version: 0.1-1
-Distribution: unstable
+Distribution: bionic
 Urgency: low
 Maintainer: PolySat, Rich Lane <cubesat@cubesat.org>
 Changed-By: PolySat, Rich Lane <cubesat@cubesat.org>
 Description:
  python3-polyxdr - PolySats custom XDR compiler targeting multiple languages
 Changes:
- polyxdr (0.1-1) unstable; urgency=low
+ polyxdr (0.1-1) bionic; urgency=low
  .
    * source package automatically created by stdeb 0.8.5
 Checksums-Sha1:
- 81c04c082d22966617eb1280ed1ca2676b135d18 862 polyxdr_0.1-1.dsc
- c7ccfa63e568b0bb35ba90e2299d9025a0607525 13448 polyxdr_0.1.orig.tar.gz
- 004f4c289750b9a4f5f9ef60c189b8d427d4a3a7 892 polyxdr_0.1-1.debian.tar.xz
- 11d910b43663d11c79d24d7db75cabf2761957c5 13335 polyxdr_0.1-1_source.buildinfo
+ 832bed798a51b14c0c34d2419785a330a86ddd70 1607 polyxdr_0.1-1.dsc
+ 09c7678fcd93839e2bac1e65e37efdf7760a78d5 13232 polyxdr_0.1.orig.tar.gz
+ 72b19b4284b2814b688c2843a7f173981bd16b4a 888 polyxdr_0.1-1.debian.tar.xz
+ f3f45db98fabdb76385ba2a3a843f3cc559cc322 14083 polyxdr_0.1-1_source.buildinfo
 Checksums-Sha256:
- 3354dc0104ff328767b5e1dfb9ffd90f40973c45bec6bfe8701e00697ac5dada 862 polyxdr_0.1-1.dsc
- 81a278803fc1e2ff47ec792d59c55b21f49706a8991e70620420520d05a17b35 13448 polyxdr_0.1.orig.tar.gz
- ae7a430a6841a8c82205319c9791cae1cddd6d65e4ad41895bb1057df6664752 892 polyxdr_0.1-1.debian.tar.xz
- e742686a63557fe060d5946f6cf83b0e65433f9304f18e2bd6ddc51fe4e14761 13335 polyxdr_0.1-1_source.buildinfo
+ d816e4ccdc5e21abb0e9c01a82a8dc525482338fca684db001e2ce70fbd30134 1607 polyxdr_0.1-1.dsc
+ 19105287e7b027157edc14e3e9690f729e716c627718857d57a20b137055f066 13232 polyxdr_0.1.orig.tar.gz
+ 8a62c1f6fab87afe2ecd9fada4083982b19f0a1c348d2efaa23b97fed61ddbe0 888 polyxdr_0.1-1.debian.tar.xz
+ 9349aedea3f13846ca4744b503ee767c3b7a7f0a725af143e656f740580bcbf3 14083 polyxdr_0.1-1_source.buildinfo
 Files:
- 57f5de135dde5543f704971296163122 862 python optional polyxdr_0.1-1.dsc
- 10df56bcccd822295f6cd41f36b2b955 13448 python optional polyxdr_0.1.orig.tar.gz
- c3c56f8ce26f3c27d020179d1c19b6e1 892 python optional polyxdr_0.1-1.debian.tar.xz
- 1d70f0ceddc0e28e6fd2a045556a91de 13335 python optional polyxdr_0.1-1_source.buildinfo
+ f3e50de89a3a584af97900e4f2e683aa 1607 python optional polyxdr_0.1-1.dsc
+ a01d7a4d17235cd807ed8c464fcda2cf 13232 python optional polyxdr_0.1.orig.tar.gz
+ d02ab456fbd8889cfd1f5eb070d5f63f 888 python optional polyxdr_0.1-1.debian.tar.xz
+ e2a5787466f33e00c77ceab8605293af 14083 python optional polyxdr_0.1-1_source.buildinfo
+
+-----BEGIN PGP SIGNATURE-----
+
+iQHMBAEBCgA2FiEEZToeMRQUulXbOE0FYXwbRbRlpYUFAl5QWdYYHGJhaWxleXdp
+Y2toYW1AZ21haWwuY29tAAoJEGF8G0W0ZaWFkNcMAJPr7haw2FPBiaPVVnJU6N8U
+QPaG8O05jnEcSyX11clJagQC2asjO+raY7uC5HmfAwT54IbIINSEp4tzbQ+w8jrU
+2R9Gbs2ck79Uvd6XIDIomw7ujcHzlpuJi2cQmux6JJe1RaJhIyVUQS+O6Qb8HTc/
+GUgAS/8mjVixKCeDVEFhQ3SuWKYUSbxd+cNQcvuGjqaUPz31P7v13gMVCTjbrn63
+zpk/6dQGZgnqLvTRDvzBj9kDnmXcgnQyrPLHMaAfbaGpbiFW5IL9jfD4We/F1vu3
+8WYWfq4DA0BYxqldFwlMbCeIK3WRTyMZ+guYH7iK7aeDS7QCn5ncKNVzmXsJ3oz7
+8AWDlDPF+45n2DH6Vadjips02rCL10A8MrcDudmrwsBuaa6LeCC2t+KQ15/Ck8/u
+WKnF+kPsqSsBOUC735tNMGd7NLRSZQndets4hH66Ky/c0tdiEFb0Yfx0M6jV+Gqh
+BNRo7AgtVv5I8RwJ0X+Qp9Y5etMg4lejYeHZ7uuaIg==
+=VzDQ
+-----END PGP SIGNATURE-----

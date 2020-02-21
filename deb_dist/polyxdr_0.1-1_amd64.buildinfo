@@ -4,14 +4,14 @@ Binary: python3-polyxdr
 Architecture: all
 Version: 0.1-1
 Checksums-Md5:
- 93e230cbeafc3db88f39f0cf133eb681 13920 python3-polyxdr_0.1-1_all.deb
+ 8952ba72d6b6cc26e60b0807f1cb226b 13916 python3-polyxdr_0.1-1_all.deb
 Checksums-Sha1:
- 302890ad0c9e0570a8c98725ba81111a4fe5858f 13920 python3-polyxdr_0.1-1_all.deb
+ 62fb72919239366916677dff7574252cb57efe90 13916 python3-polyxdr_0.1-1_all.deb
 Checksums-Sha256:
- 2be70962eca5014fa3654f53c8ff46ae5adb51eced9e4252ddd096fbdb0d1fb2 13920 python3-polyxdr_0.1-1_all.deb
+ 12b179fc132668312626740e8ac0dd16c89d604106dc940911d1429954ecd2f8 13916 python3-polyxdr_0.1-1_all.deb
 Build-Origin: Ubuntu
 Build-Architecture: amd64
-Build-Date: Fri, 21 Feb 2020 12:30:29 -0800
+Build-Date: Fri, 21 Feb 2020 14:25:41 -0800
 Installed-Build-Depends:
  adduser (= 3.116ubuntu1),
  adwaita-icon-theme (= 3.28.0-1ubuntu1),
@@ -389,4 +389,4 @@ Environment:
  LC_PAPER="en_US.UTF-8"
  LC_TELEPHONE="en_US.UTF-8"
  LC_TIME="en_US.UTF-8"
- SOURCE_DATE_EPOCH="1582317022"
+ SOURCE_DATE_EPOCH="1582323933"

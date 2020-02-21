@@ -48,4 +48,4 @@ a8b590e2a1137b9a812634cacef3cd00  usr/lib/python3/dist-packages/polyxdr/backends
 bbcb11f2f848002daeb54645b7cc91d0  usr/lib/python3/dist-packages/polyxdr/backends/xp/templates/union.xp
 26177076c11e817862fea7c916b2cd17  usr/lib/python3/dist-packages/polyxdr/ir.py
 44095a98a733a7986cead0c8f28e0c6e  usr/lib/python3/dist-packages/polyxdr/parser.py
-24715fdba13f138571dd45bb4e8c6116  usr/share/doc/python3-polyxdr/changelog.Debian.gz
+9a4ede1c6103eafa8ba37b8d19bfa3b5  usr/share/doc/python3-polyxdr/changelog.Debian.gz

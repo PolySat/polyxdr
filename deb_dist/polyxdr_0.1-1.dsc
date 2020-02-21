@@ -1,3 +1,6 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
 Format: 3.0 (quilt)
 Source: polyxdr
 Binary: python3-polyxdr
@@ -10,11 +13,26 @@ Build-Depends: dh-python, python3-setuptools, python3-all, debhelper (>= 9)
 Package-List:
  python3-polyxdr deb python optional arch=all
 Checksums-Sha1:
- c7ccfa63e568b0bb35ba90e2299d9025a0607525 13448 polyxdr_0.1.orig.tar.gz
- 004f4c289750b9a4f5f9ef60c189b8d427d4a3a7 892 polyxdr_0.1-1.debian.tar.xz
+ 09c7678fcd93839e2bac1e65e37efdf7760a78d5 13232 polyxdr_0.1.orig.tar.gz
+ 72b19b4284b2814b688c2843a7f173981bd16b4a 888 polyxdr_0.1-1.debian.tar.xz
 Checksums-Sha256:
- 81a278803fc1e2ff47ec792d59c55b21f49706a8991e70620420520d05a17b35 13448 polyxdr_0.1.orig.tar.gz
- ae7a430a6841a8c82205319c9791cae1cddd6d65e4ad41895bb1057df6664752 892 polyxdr_0.1-1.debian.tar.xz
+ 19105287e7b027157edc14e3e9690f729e716c627718857d57a20b137055f066 13232 polyxdr_0.1.orig.tar.gz
+ 8a62c1f6fab87afe2ecd9fada4083982b19f0a1c348d2efaa23b97fed61ddbe0 888 polyxdr_0.1-1.debian.tar.xz
 Files:
- 10df56bcccd822295f6cd41f36b2b955 13448 polyxdr_0.1.orig.tar.gz
- c3c56f8ce26f3c27d020179d1c19b6e1 892 polyxdr_0.1-1.debian.tar.xz
+ a01d7a4d17235cd807ed8c464fcda2cf 13232 polyxdr_0.1.orig.tar.gz
+ d02ab456fbd8889cfd1f5eb070d5f63f 888 polyxdr_0.1-1.debian.tar.xz
+
+-----BEGIN PGP SIGNATURE-----
+
+iQHMBAEBCgA2FiEEZToeMRQUulXbOE0FYXwbRbRlpYUFAl5QWdYYHGJhaWxleXdp
+Y2toYW1AZ21haWwuY29tAAoJEGF8G0W0ZaWF+MML/1ssrv4X4QqLAqWrL+TYZBuv
+MTHR+sWCh1IbGLTyYl5/iucW4f94SBMtI4kJO3wWhCcNiurui0fl9lFtDNxP3uXt
+xJGU5fuFv5RLeKzl8HNBkpWECagM6oBTl2GyijcFAOe/sk9TR80Oml4Scy+uXLpy
+WRZmkykNpTEpxKOTCEJt45Vp5Or2DH9B7laEMGaliYab6z7r6/DIMmNBA4rCHuWy
+A0WgAFLLEICAslK0Vtaj6IHSI3dWeVKVvkKR+CvYove6CdToQ/3q1xJheX4q5bbW
+UCoH3dj3N9cJbhMxtt0+y2ZIC6GT9+zkaXGhgLQLTgrT5Vrp+tmqDC8nVuQRp9QO
+fl6e281VEdiJJcRHmwTafSTu94kQDheYF8r2gZDyfSicAv/Y+3EEiL0ltNcbz/5q
+iWYV5jRI1uoSATcseDhXfn+cRSG23+jl84bghoUnmUC5aDZXVN4ZmD6SGqRpr11Q
+R6TYVbcnZU6WQPL9X4F3tqqkenWj9cUISPBoDpI/tg==
+=G6aI
+-----END PGP SIGNATURE-----
