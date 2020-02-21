@@ -1,0 +1,10 @@
+Metadata-Version: 1.0
+Name: polyxdr
+Version: 0.1
+Summary: PolySats custom XDR compiler targeting multiple languages
+Home-page: http://github.com/PolySat/libproc
+Author: PolySat, Rich Lane
+Author-email: cubesat@cubesat.org
+License: UNKNOWN
+Description: UNKNOWN
+Platform: UNKNOWN

@@ -1,0 +1,25 @@
+Format: 1.8
+Date: Fri, 21 Feb 2020 12:30:22 -0800
+Source: polyxdr
+Binary: python3-polyxdr
+Architecture: all
+Version: 0.1-1
+Distribution: unstable
+Urgency: low
+Maintainer: PolySat, Rich Lane <cubesat@cubesat.org>
+Changed-By: PolySat, Rich Lane <cubesat@cubesat.org>
+Description:
+ python3-polyxdr - PolySats custom XDR compiler targeting multiple languages
+Changes:
+ polyxdr (0.1-1) unstable; urgency=low
+ .
+   * source package automatically created by stdeb 0.8.5
+Checksums-Sha1:
+ 48efc4fcebcac6e02e798c6b1ac2fa0c15ca9b98 13374 polyxdr_0.1-1_amd64.buildinfo
+ 302890ad0c9e0570a8c98725ba81111a4fe5858f 13920 python3-polyxdr_0.1-1_all.deb
+Checksums-Sha256:
+ aa106de3f56cd7a5c5bb815dd466e1a80733f321f17cb3fcf209bbe9ba482d15 13374 polyxdr_0.1-1_amd64.buildinfo
+ 2be70962eca5014fa3654f53c8ff46ae5adb51eced9e4252ddd096fbdb0d1fb2 13920 python3-polyxdr_0.1-1_all.deb
+Files:
+ 962a2973af405d4abe04afb764ddc207 13374 python optional polyxdr_0.1-1_amd64.buildinfo
+ 93e230cbeafc3db88f39f0cf133eb681 13920 python optional python3-polyxdr_0.1-1_all.deb

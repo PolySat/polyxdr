@@ -1,0 +1,11 @@
+Package: python3-polyxdr
+Source: polyxdr
+Version: 0.1-1
+Architecture: all
+Maintainer: PolySat, Rich Lane <cubesat@cubesat.org>
+Installed-Size: 109
+Depends: python3-nose, python3-pyparsing, python3:any (>= 3.3.2-2~)
+Section: python
+Priority: optional
+Homepage: http://github.com/PolySat/libproc
+Description: PolySats custom XDR compiler targeting multiple languages

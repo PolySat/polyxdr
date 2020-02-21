@@ -1,0 +1,13 @@
+Source: polyxdr
+Maintainer: PolySat, Rich Lane <cubesat@cubesat.org>
+Section: python
+Priority: optional
+Build-Depends: dh-python, python3-setuptools, python3-all, debhelper (>= 9)
+Standards-Version: 3.9.6
+Homepage: http://github.com/PolySat/libproc
+
+Package: python3-polyxdr
+Architecture: all
+Depends: ${misc:Depends}, ${python3:Depends}
+Description: PolySats custom XDR compiler targeting multiple languages
+
