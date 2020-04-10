@@ -12,7 +12,7 @@ config = {
     'url': 'http://github.com/PolySat/libproc',
     'author_email': 'cubesat@cubesat.org',
     'version': '0.1',
-    'install_requires': ['nose', 'tenjin', 'pyparsing'],
+    'install_requires': ['nose', 'tenjin', 'pyparsing<=2.4'],
     'packages': ['polyxdr', 'polyxdr/backends', 'polyxdr/backends/xp', 'polyxdr/backends/libproc', 'polyxdr/backends/telem-dict'],
     'package_data': {'polyxdr': ['backends/libproc/templates/*.c', 'backends/libproc/templates/*.h', 'backends/xp/templates/*.xp', 'backends/telem-dict/templates/s*']},
     'scripts': ['poly-xdrgen']
