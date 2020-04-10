@@ -49,3 +49,4 @@ def generate(ir, output):
             render_template(out, "struct-footer.xp", dict(struct=x))
         elif isinstance(x, XDRUnion):
             render_template(out, "union.xp", dict(union=x))
+    out.close()

@@ -3,9 +3,8 @@
 
 name: Python application
 
-on:
+on: 
   push:
-    branches: [ master ]
   pull_request:
     branches: [ master ]
 
@@ -24,10 +23,15 @@ jobs:
       run: |
         python3.8 -m pip install --upgrade pip
         python3.8 -m pip install setuptools
+
     - name: Install polyxdr
       run: |
         python3.8 setup.py install
-        
+
+    - name: Run unit tests
+      run: |
+        cd tests && python3.8 polyxdr_test.py
+
 #    - name: Lint with flake8
 #      run: |
 #        pip install flake8
