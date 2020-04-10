@@ -31,7 +31,7 @@ jobs:
         
     - name: Run unit tests
       run: |
-        cd tests && python3.8 tests/polyxdr_test.py
+        cd tests && python3.8 polyxdr_test.py
 
 #    - name: Lint with flake8
 #      run: |
