@@ -8,7 +8,7 @@ from polyxdr.parser import *
 class TestPolyxdr(unittest.TestCase):
     def test_xp(self):
         generate_schema_output("xp")
-        self.assertTrue(filecmp.cmp("expected.xp", "schema.xp.out", shallow=False))
+        self.assertTrue(filecmp.cmp("expected.xp", "schema.out.xp", shallow=False))
 
     def test_libproc(self):
         generate_schema_output("libproc")
@@ -27,7 +27,7 @@ def generate_schema_output(schema):
         ir = p.xdr_parse(f.read())
 
     backend = importlib.import_module(f"polyxdr.backends.{schema}")
-    backend.generate(ir, f"schema.{schema}.out")
+    backend.generate(ir, "schema.out")
 
 if __name__ == "__main__":
     unittest.main()
