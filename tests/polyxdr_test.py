@@ -15,11 +15,6 @@ class TestPolyxdr(unittest.TestCase):
         self.assertTrue(filecmp.cmp("expected/expected.c", "output/libproc.out.c", shallow=False))
         self.assertTrue(filecmp.cmp("expected/expected.h", "output/libproc.out.h", shallow=False))
 
-#   def test_python(self):
-        #generate_schema_output("python")
-        #self.assertTrue(filecmp.cmp("expected.python", "schema.python.out", shallow=False))
-
-
 
 
 def generate_schema_output(schema):
