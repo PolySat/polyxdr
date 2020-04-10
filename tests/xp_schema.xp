@@ -1,0 +1,115 @@
+namespace ade;
+
+const CMD_BASE =       0x400;
+const TYPE_BASE = 0x01000400;
+const ERR_BASE =  0x02000400;
+
+enum types {
+   STATUS = TYPE_BASE + 0,
+   DEPLOY_PARAMS = TYPE_BASE + 1,
+};
+
+enum Cmds {
+   DEPLOY = CMD_BASE + 0,
+};
+
+enum Errs {
+   BAD_TIME = ERR_BASE + 0,
+};
+
+struct Status {
+   float time_to_deployment {
+      name "Time to Deployment";
+      key status_time_to_deployment;
+      unit "seconds";
+      description "Time until deployment, possibly negative";
+   };
+   int deployed {
+      name "Deployed";
+      key status_deployed;
+      unit "";
+      description "Boolean value representing deployment of sail";
+   };
+   int pib_temp1 {
+      name "Pib Temperature Sensor 1";
+      key pib_temp1;
+      unit "C";
+      description "Temperature sensor on the payload interface board";
+   };
+   int pib_temp2 {
+      name "Pib Temperature Sensor 2";
+      key pib_temp2;
+      unit "C";
+      description "Temperature sensor on the payload interface board";
+   };
+   int accel_x {
+      name "Accelerometer X value";
+      key accel_x;
+      unit "G/s";
+      description "x value of accelerometer reading";
+   };
+   int accel_y {
+      name "Accelerometer Y value";
+      key accel_y;
+      unit "G/s";
+      description "y value of accelerometer reading";
+   };
+   int accel_z {
+      name "Accelerometer Z value";
+      key accel_z;
+      unit "G/s";
+      description "z value of accelerometer reading";
+   };
+   int gyro_x {
+      name "Gyroscope X value";
+      key gyro_x;
+      unit "rad/s";
+      description "x value of gyro reading";
+   };
+   int gyro_y {
+      name "Gyroscope Y value";
+      key gyro_y;
+      unit "rad/s";
+      description "y value of gyro reading";
+   };
+   int gyro_z {
+      name "Gyroscope Z value";
+      key gyro_z;
+      unit "rad/s";
+      description "z value of gyro reading";
+   };
+   int mag_x {
+      name "Magnetometer X value";
+      key mag_x;
+      unit "rad/s";
+      description "x value of mag reading";
+   };
+   int mag_y {
+      name "Magnetometer Y value";
+      key mag_y;
+      unit "rad/s";
+      description "y value of mag reading";
+   };
+   int mag_z {
+      name "Magnetometer Z value";
+      key mag_z;
+      unit "rad/s";
+      description "z value of mag reading";
+   };
+} = types::STATUS;
+
+struct DeployParams {
+   unsigned int delay {
+      key delay;
+      description "deployment time delay";
+   };
+} = types::DEPLOY_PARAMS;
+
+command "ade-status" {
+   summary "Reports the deployment time and deployment status of the ade payload process";
+} = IPC::CMDS::STATUS;
+
+command "deploy" {
+   summary "Deploy the drag sail after a specified delay";
+   param types::DEPLOY_PARAMS;
+} = Cmds::DEPLOY;
