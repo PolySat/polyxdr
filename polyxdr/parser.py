@@ -21,7 +21,13 @@ class Parser:
 #Enums defined in the parent IPC scope
             self.scopeMap['ipc::cmds::status'] = 'IPC::CMDS::STATUS'
             self.scopeMap['ipc::cmds::data_req'] = 'IPC::CMDS::DATA_REQ'
+            self.scopeMap['ipc::cmds::wd_register_static'] = 'IPC::CMDS::WD_REGISTER_STATIC'
+            self.scopeMap['ipc::cmds::wd_reg_info'] = 'IPC::CMDS::WD_REG_INFO'
             self.scopeMap['ipc::datareq'] = 'IPC::DataReq'
+            self.scopeMap['ipc::wdreginfo'] = 'IPC::WDRegInfo'
+            self.scopeMap['ipc::wdprocname'] = 'IPC::WDProcName'
+            self.scopeMap['ipc::types::wd_proc_name'] = 'IPC::TYPES::WD_PROC_NAME'
+            self.scopeMap['ipc::types::wd_reg_info'] = 'IPC::TYPES::WD_REG_INFO'
             self.namespace = 'IPC::' + t[1].upper() + '::'
          else:
             self.namespace = self.parent.namespace + t[1].upper() + '::'
@@ -31,7 +37,13 @@ class Parser:
       self.namespace = ''
       self.scopeMap['ipc::cmds::status'] = 'IPC::CMDS::STATUS'
       self.scopeMap['ipc::cmds::data_req'] = 'IPC::CMDS::DATA_REQ'
+      self.scopeMap['ipc::cmds::wd_register_static'] = 'IPC::CMDS::WD_REGISTER_STATIC'
+      self.scopeMap['ipc::cmds::wd_reg_info'] = 'IPC::CMDS::WD_REG_INFO'
       self.scopeMap['ipc::datareq'] = 'IPC::DataReq'
+      self.scopeMap['ipc::wdreginfo'] = 'IPC::WDRegInfo'
+      self.scopeMap['ipc::wdprocname'] = 'IPC::WDProcName'
+      self.scopeMap['ipc::types::wd_proc_name'] = 'IPC::TYPES::WD_PROC_NAME'
+      self.scopeMap['ipc::types::wd_reg_info'] = 'IPC::TYPES::WD_REG_INFO'
       return t;
 
    def scopeIdent(self, t):
