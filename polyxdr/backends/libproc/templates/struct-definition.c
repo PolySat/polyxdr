@@ -4,17 +4,17 @@
 ::    #endif
 ::    return pre + val + post 
 :: #enddef
-:: def convstr(bits, eqn, conv):
-::    if bits == 0 and eqn == "":
+:: def convstr(div, off, eqn, conv):
+::    if div == 1 and off == 0 and eqn == "":
 ::       return 'NULL'
 ::    #endif
-::    return '&' + conv[str(bits) + ':' + eqn].name
+::    return '&' + conv[str(div) + ':' + str(off) + ':' + eqn].name
 :: #enddef
-:: def invstr(bits, eqn, conv):
-::    if bits == 0 and eqn == "":
+:: def invstr(div, off, eqn, conv):
+::    if div == 1 and off == 0 and eqn == "":
 ::       return 'NULL'
 ::    #endif
-::    return '&' + conv[eqn + ':' + str(bits)].name
+::    return '&' + conv[eqn + ':' + str(off) + ':' + str(div)].name
 :: #enddef
 static struct XDR_FieldDefinition ${st.name.replace('::','_',400)}_Fields[] = {
 :: for m in st.members:
@@ -31,18 +31,19 @@ static struct XDR_FieldDefinition ${st.name.replace('::','_',400)}_Fields[] = {
 :: #endif
       offsetof(struct ${st.name.replace('::','_',400)}, ${m.name}),
       ${nullstr(m.documentation.key, '"', '"')}, ${nullstr(m.documentation.name, '"', '"')}, ${nullstr(m.documentation.unit, '"', '"')},
-      ${convstr(m.documentation.fractional_bits, m.documentation.conversion, conv)},
-      ${invstr(m.documentation.fractional_bits, m.documentation.inverse, conv)},
+      ${convstr(m.documentation.divisor, m.documentation.offset, m.documentation.conversion, conv)},
+      ${invstr(m.documentation.divisor, m.documentation.offset, m.documentation.inverse, conv)},
       ${types[m.type]['id']},
       ${nullstr(m.documentation.description, '"', '"')},
 :: if m.length_const:
-      0 },
+      0,
 :: else:
-      offsetof(struct ${st.name.replace('::','_',400)}, ${m.length}) },
+      offsetof(struct ${st.name.replace('::','_',400)}, ${m.length}),
 :: #endif
-
+      ${nullstr(m.documentation.true_label, '"', '"')},
+      ${nullstr(m.documentation.false_label, '"', '"')}, },
 :: #endfor
-   { NULL, 0, NULL, NULL, NULL, NULL, NULL, 0, NULL, 0 }
+   { NULL, 0, NULL, NULL, NULL, NULL, NULL, 0, NULL, 0, NULL, NULL }
 };
 
 static struct XDR_StructDefinition ${st.name.replace('::','_',400)}_Struct = {

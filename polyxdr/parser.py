@@ -178,10 +178,15 @@ class Parser:
           s("{") + (P.Optional(g(kw("key") + identifier + s(";"))) & \
              P.Optional(g(kw("name") + P.QuotedString('"') + s(";"))) & \
              P.Optional(g(kw("unit") + P.QuotedString('"') + s(";"))) & \
+             P.Optional(g(kw("computed_by") + conversion_expr + s(";"))) & \
              P.Optional(g(kw("conversion") + conversion_expr + s(";"))) & \
              P.Optional(g(kw("inverse") + conversion_expr + s(";"))) & \
              P.Optional(g(kw("fractional_bits") + decimal_literal + s(";"))) & \
-             P.Optional(g(kw("description") + P.QuotedString('"') + s(";"))) \
+             P.Optional(g(kw("divisor") + decimal_literal + s(";"))) & \
+             P.Optional(g(kw("offset") + decimal_literal + s(";"))) & \
+             P.Optional(g(kw("description") + P.QuotedString('"') + s(";"))) & \
+             P.Optional(g(kw("true_label") + P.QuotedString('"') + s(";"))) & \
+             P.Optional(g(kw("false_label") + P.QuotedString('"') + s(";"))) \
           ) + s("}")
 
       bitfield_member = bitfield_declaration + g(P.Optional(fielddocumentation))
@@ -269,10 +274,14 @@ class Parser:
       key = ''
       name = ''
       desc = ''
-      frac_bits = 0
+      divisor = 1
       unit = ''
       conv = ''
       inv = ''
+      computed = ''
+      offset = 0
+      true_label = ''
+      false_label = ''
       for field in x:
          if field[0] == 'key':
             key = field[1]
@@ -285,16 +294,24 @@ class Parser:
          if field[0] == 'offset':
             offset = field[1]
          if field[0] == 'fractional_bits':
-            frac_bits = int(field[1])
+            divisor = 1 << int(field[1])
+         if field[0] == 'divisor':
+            divisor = field[1]
          if field[0] == 'conversion':
             conv = self.stringify_conversion(field[1])
          if field[0] == 'inverse':
             inv = self.stringify_conversion(field[1])
-      return XDRFieldDocumentation(key, name, desc, frac_bits, conv, inv, unit)
+         if field[0] == 'computed_by':
+            computed = self.stringify_conversion(field[1])
+         if field[0] == 'true_label':
+            true_label = field[1]
+         if field[0] == 'false_label':
+            false_label = field[1]
+      return XDRFieldDocumentation(key, name, desc, offset, divisor, conv, inv, unit, computed, true_label, false_label)
 
    def xdr_parse_declaration(self, x):
       if x[0] == 'void':
-         return XDRDeclaration(None, 'basic', 'void', None, None, True, XDRFieldDocumentation('', '', '', 0, '', '', ''), 0, 'void')
+         return XDRDeclaration(None, 'basic', 'void', None, None, True, XDRFieldDocumentation('', '', '', 0, 1, '', '', '', '', '', ''), 0, 'void')
       elif x[0] == 'opaque' or x[0] == 'string':
          type = x[0]
          name = x[1]

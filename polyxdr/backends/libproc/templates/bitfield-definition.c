@@ -4,17 +4,17 @@
 ::    #endif
 ::    return pre + val + post 
 :: #enddef
-:: def convstr(bits, eqn, conv):
-::    if bits == 0 and eqn == "":
+:: def convstr(div, off, eqn, conv):
+::    if div == 1 and off == 0 and eqn == "":
 ::       return 'NULL'
 ::    #endif
-::    return '&' + conv[str(bits) + ':' + eqn].name
+::    return '&' + conv[str(bits) + ':' + str(off) + ':' + eqn].name
 :: #enddef
-:: def invstr(bits, eqn, conv):
-::    if bits == 0 and eqn == "":
+:: def invstr(div, off, eqn, conv):
+::    if div == 1 and off == 0 and eqn == "":
 ::       return 'NULL'
 ::    #endif
-::    return '&' + conv[eqn + ':' + str(bits)].name
+::    return '&' + conv[eqn + ':' + str(off) + ':' + str(div)].name
 :: #enddef
 :: bitoffset = 0
 static struct XDR_FieldDefinition ${bf.name.replace('::','_',400)}_Fields[] = {
@@ -25,14 +25,16 @@ static struct XDR_FieldDefinition ${bf.name.replace('::','_',400)}_Fields[] = {
    { &${types[m.type]['bit_funcs']},
       offsetof(struct ${bf.name.replace('::','_',400)}, ${m.name}),
       ${nullstr(m.documentation.key, '"', '"')}, ${nullstr(m.documentation.name, '"', '"')}, ${nullstr(m.documentation.unit, '"', '"')},
-      ${convstr(m.documentation.fractional_bits, m.documentation.conversion, conv)},
-      ${invstr(m.documentation.fractional_bits, m.documentation.inverse, conv)},
+      ${convstr(m.documentation.divisor, m.documentation.offset, m.documentation.conversion, conv)},
+      ${invstr(m.documentation.divisor, m.documentation.offset, m.documentation.inverse, conv)},
       ${bitoffset},
       ${nullstr(m.documentation.description, '"', '"')},
-      ${m.bit_length} },
+      ${m.bit_length},
+      ${nullstr(m.documentation.true_label, '"', '"')},
+      ${nullstr(m.documentation.false_label, '"', '"')} },
 :: bitoffset += m.bit_length
 :: #endfor
-   { NULL, 0, NULL, NULL, NULL, NULL, NULL, 0, NULL, 0 }
+   { NULL, 0, NULL, NULL, NULL, NULL, NULL, 0, NULL, 0, NULL, NULL }
 };
 
 static struct XDR_StructDefinition ${bf.name.replace('::','_',400)}_Struct = {

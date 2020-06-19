@@ -1,9 +1,11 @@
 static double ${conv.name}(double inp)
 {
-:: if conv.bits > 0:
-   double val = inp / (1 << ${conv.bits});
-:: else:
    double val = inp;
+:: if conv.divisor != 1:
+   val = inp / ${conv.divisor};
+:: #endif
+:: if conv.offset != 0:
+   val += ${conv.offset};
 :: #endif
 :: if conv.equation == '':
    return val;

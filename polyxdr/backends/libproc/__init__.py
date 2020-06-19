@@ -166,7 +166,7 @@ def generateHeader(ir, output, namespace, mapping):
 def consolidate_conversions(ir):
    conversions = {}
    number = 0
-   Conv = namedtuple("ConversionFunc", ["bits", "equation", "name", "inverse"])
+   Conv = namedtuple("ConversionFunc", ["divisor", "offset", "equation", "name", "inverse"])
    docs = []
    for x in ir:
       if isinstance(x, XDRStruct) or isinstance(x, XDRBitfield):
@@ -175,16 +175,16 @@ def consolidate_conversions(ir):
                continue
 
             doc = m.documentation
-            if doc.fractional_bits > 0 or doc.conversion != '':
-               key = str(doc.fractional_bits) + ':' + doc.conversion
+            if doc.divisor != 1 or doc.offset != 0 or doc.conversion != '':
+               key = str(doc.divisor) + ':' + str(doc.offset) + ':' + doc.conversion
                if key not in conversions:
-                  conversions[key] = Conv(doc.fractional_bits, doc.conversion, 'unit_conversion_' + str(number), False)
+                  conversions[key] = Conv(doc.divisor, doc.offset, doc.conversion, 'unit_conversion_' + str(number), False)
                   number += 1
 
-            if doc.fractional_bits > 0 or doc.inverse != '':
-               key = doc.inverse + ':' + str(doc.fractional_bits)
+            if doc.divisor != 1 or doc.offset != 0 or doc.inverse != '':
+               key = doc.inverse + ':' + str(doc.offset) + ':' + str(doc.divisor)
                if key not in conversions:
-                  conversions[key] = Conv(doc.fractional_bits, doc.inverse, 'unit_conversion_' + str(number), True)
+                  conversions[key] = Conv(doc.divisor, doc.offset, doc.inverse, 'unit_conversion_' + str(number), True)
                   number += 1
 
    return conversions
