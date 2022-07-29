@@ -167,7 +167,7 @@ class Parser:
           g(kw("bool")) + identifier | \
           g(resolved_type_specifier) + identifier + s(":") + numeric_literal
 
-      conversion_expr = P.infixNotation( kw("val") | \
+      conversion_expr = P.operatorPrecedence( kw("val") | \
             P.pyparsing_common.fnumber, \
           [(P.oneOf('+ -'), 1, P.opAssoc.RIGHT), \
            (P.oneOf('* /'), 2, P.opAssoc.LEFT), \
