@@ -1,6 +1,6 @@
 import os
 import tenjin
-from polyxdr.parser import *
+from polyxdr3.parser import *
 from collections import namedtuple
 
 type_map = { 'int': { 'type': 'int32_t', 'funcs': 'xdr_int32_functions', 'arr_funcs': 'xdr_int32_arr_functions', 'bit_funcs': 'xdr_int32_bitfield_functions', 'dealloc':False, 'id': '0' }, \

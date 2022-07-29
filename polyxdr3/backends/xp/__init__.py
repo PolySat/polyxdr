@@ -1,6 +1,6 @@
 import os
-from polyxdr.parser import *
-from polyxdr.backends.xp.template_utils import render_template
+from polyxdr3.parser import *
+from polyxdr3.backends.xp.template_utils import render_template
 #from template_utils import render_template
 
 def collect_constants(ir):

@@ -4,7 +4,7 @@ import sys
 import argparse
 import pyparsing
 import importlib
-from polyxdr.parser import *
+from polyxdr3.parser import *
 
 def main():
     parser = argparse.ArgumentParser(description='XDR compiler')

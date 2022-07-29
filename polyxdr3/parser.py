@@ -10,7 +10,7 @@
 
 import os
 import pyparsing as P
-from polyxdr.ir import *
+from polyxdr3.ir import *
 
 class Parser:
    def namespaceParse(self, t):

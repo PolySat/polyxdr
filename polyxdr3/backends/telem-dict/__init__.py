@@ -1,6 +1,6 @@
 import os
 import tenjin
-from polyxdr.parser import *
+from polyxdr3.parser import *
 from collections import namedtuple
 
 def generateHeader(ir, out, parent, p_unit, p_name, type_filter):
