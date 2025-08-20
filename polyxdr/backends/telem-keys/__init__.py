@@ -28,8 +28,8 @@ def generateHeader(ir, out, parent, p_unit, p_name, type_filter):
                continue
 
             render_template(out, "struct", dict(st=x,doc=doc,key=key))
-            if "::" in m.type_name:
-               generateHeader(ir, out, key, unit, name, m.type_name)
+#if "::" in m.type_name:
+#               generateHeader(ir, out, key, unit, name, m.type_name)
                
 
 #   for x in ir:
