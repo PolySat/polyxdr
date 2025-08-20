@@ -89,6 +89,8 @@ struct Status {
       key mag_y;
       unit "rad/s";
       description "y value of mag reading";
+      location "systemboard";
+      subsystem "adcs";
    };
    int mag_z {
       name "Magnetometer Z value";

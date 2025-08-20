@@ -185,6 +185,9 @@ class Parser:
              P.Optional(g(kw("divisor") + decimal_literal + s(";"))) & \
              P.Optional(g(kw("offset") + decimal_literal + s(";"))) & \
              P.Optional(g(kw("description") + P.QuotedString('"') + s(";"))) & \
+             P.Optional(g(kw("location") + P.QuotedString('"') + s(";"))) & \
+             P.Optional(g(kw("subsystem") + P.QuotedString('"') + s(";"))) & \
+             P.Optional(g(kw("group") + P.QuotedString('"') + s(";"))) & \
              P.Optional(g(kw("true_label") + P.QuotedString('"') + s(";"))) & \
              P.Optional(g(kw("false_label") + P.QuotedString('"') + s(";"))) \
           ) + s("}")
@@ -282,6 +285,9 @@ class Parser:
       offset = 0
       true_label = ''
       false_label = ''
+      location = ''
+      subsystem = ''
+      group = ''
       for field in x:
          if field[0] == 'key':
             key = field[1]
@@ -303,15 +309,23 @@ class Parser:
             inv = self.stringify_conversion(field[1])
          if field[0] == 'computed_by':
             computed = self.stringify_conversion(field[1])
+         if field[0] == 'location':
+            location = field[1]
+         if field[0] == 'subsystem':
+            subsystem = field[1]
          if field[0] == 'true_label':
             true_label = field[1]
          if field[0] == 'false_label':
             false_label = field[1]
-      return XDRFieldDocumentation(key, name, desc, offset, divisor, conv, inv, unit, computed, true_label, false_label)
+         if subsystem == '' and group != '':
+            subsystem = group
+         if group == '' and subsystem != '':
+            group = subsystem
+      return XDRFieldDocumentation(key, name, desc, offset, divisor, conv, inv, unit, computed, true_label, false_label, location, subsystem, group)
 
    def xdr_parse_declaration(self, x):
       if x[0] == 'void':
-         return XDRDeclaration(None, 'basic', 'void', None, None, True, XDRFieldDocumentation('', '', '', 0, 1, '', '', '', '', '', ''), 0, 'void')
+         return XDRDeclaration(None, 'basic', 'void', None, None, True, XDRFieldDocumentation('', '', '', 0, 1, '', '', '', '', '', '', '', '', ''), 0, 'void')
       elif x[0] == 'opaque' or x[0] == 'string':
          type = x[0]
          name = x[1]
