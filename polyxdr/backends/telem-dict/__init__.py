@@ -17,11 +17,15 @@ def generateHeader(ir, out, parent, p_unit, p_name, type_filter):
 
 #print(m.type_name)
             doc = m.documentation
+            if not doc.export:
+               continue
             key = parent
             if parent == None:
                key = doc.key
             else:
                key = parent + '_' + doc.key
+            if key == '':
+               continue
 
             unit = p_unit
             if p_unit == None or doc.unit != '':
