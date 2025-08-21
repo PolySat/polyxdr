@@ -1,0 +1,7 @@
+<EVENT>
+   PORT_NAME=${proc_name}
+   PORT=${port}
+   ID=${id}
+   DESCRIPTION=${desc}
+   NAME=${name}
+</EVENT>

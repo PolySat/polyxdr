@@ -1,4 +1,12 @@
-namespace ade;
+namespace ade {
+   subsystem "payload";
+   group "pl";
+   location "Test Loc";
+   dl_name "foo";
+   dl_path "/usr/local/sbin/util";
+   lproc_name "payload";
+   lproc_port 12345;
+};
 
 const CMD_BASE =       0x400;
 const TYPE_BASE = 0x01000400;
@@ -115,3 +123,11 @@ command "deploy" {
    summary "Deploy the drag sail after a specified delay";
    param types::DEPLOY_PARAMS;
 } = Cmds::DEPLOY;
+
+enum Events {
+   TEST = 1
+};
+
+event "test-event" {
+   summary "Some useful description";
+} = Events::TEST;

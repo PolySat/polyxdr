@@ -95,6 +95,13 @@ class Parser:
       self.cmdcnt = 0
       self.enumNamespace = ''
       self.scopeMap = {}
+      self.dfl_location = ''
+      self.dfl_subsystem = ''
+      self.dfl_group = ''
+      self.dl_name = ''
+      self.dl_path = ''
+      self.lproc_name = ''
+      self.lproc_port = ''
       kw = P.Keyword
       s = P.Suppress
       lit = P.Literal
@@ -194,6 +201,17 @@ class Parser:
              P.Optional(g(kw("false_label") + P.QuotedString('"') + s(";"))) \
           ) + s("}")
 
+      namespacedefaults = \
+          s("{") + ( \
+             P.Optional(g(kw("location") + P.QuotedString('"') + s(";"))) & \
+             P.Optional(g(kw("subsystem") + P.QuotedString('"') + s(";"))) & \
+             P.Optional(g(kw("group") + P.QuotedString('"') + s(";"))) & \
+             P.Optional(g(kw("dl_name") + P.QuotedString('"') + s(";"))) & \
+             P.Optional(g(kw("dl_path") + P.QuotedString('"') + s(";"))) & \
+             P.Optional(g(kw("lproc_name") + P.QuotedString('"') + s(";"))) & \
+             P.Optional(g(kw("lproc_port") + decimal_literal + s(";"))) \
+          ) + s("}")
+
       bitfield_member = bitfield_declaration + g(P.Optional(fielddocumentation))
 
       declaration = \
@@ -219,10 +237,10 @@ class Parser:
       struct_body << s("{") + P.OneOrMore(struct_member) + s("}")
 
       constant_def = kw("const") - scopedUpperIdentifier - s("=") - numeric_literal - s(";")
-      namespace_def = kw("namespace") - identifier - s(";")
+      namespace_def = kw("namespace") - identifier - P.Optional(namespacedefaults) - s(";")
       namespace_def.setParseAction(self.namespaceParse)
 
-      nonamespace_def = kw("nonamespace") + s(";")
+      nonamespace_def = kw("nonamespace") + P.Optional(namespacedefaults) + s(";")
       nonamespace_def.setParseAction(self.nonamespace)
 
       struct_def = kw("struct") - newscopedidentifier - g(struct_body) + P.Optional(s('=') - type_name) - s(";")
@@ -238,6 +256,12 @@ class Parser:
       
       command_def = kw("command") - P.QuotedString('"') - g(command_body) - P.Optional(s('=') + type_name) - s(";")
 
+      event_options = \
+             P.Optional(g(kw("summary") + P.QuotedString('"') + s(";")))
+
+      event_body = s("{") + event_options + s("}")
+      event_def = kw("event") - P.QuotedString('"') - g(event_body) - P.Optional(s('=') + type_name) - s(";")
+
       union_def = kw("union") - newscopedidentifier - s('{') + s('}') - s(";")
 
       error_def = kw("error") - type_name - s('=') + P.QuotedString('"') + s(";")
@@ -247,6 +271,7 @@ class Parser:
           union_def | \
           struct_def | \
           command_def | \
+          event_def | \
           error_def
 
       import_def = kw("import") - P.QuotedString('"') - s(";")
@@ -287,9 +312,9 @@ class Parser:
       offset = 0
       true_label = ''
       false_label = ''
-      location = ''
-      subsystem = ''
-      group = ''
+      location = self.dfl_location
+      subsystem = self.dfl_subsystem
+      group = self.dfl_group
       export = True
       for field in x:
          if field[0] == 'key':
@@ -424,7 +449,36 @@ class Parser:
 
    def xdr_parse_definition(self, x):
       if x[0] == 'namespace':
-         return [XDRNamespace(x[1])]
+         location = ''
+         subsystem = ''
+         group = ''
+         dl_name = ''
+         dl_path = ''
+         lproc_name = ''
+         lproc_port = ''
+         for i in x[2:]:
+            if i[0] == 'location':
+               location = i[1]
+               self.dfl_location = location
+            if i[0] == 'subsystem':
+               subsystem = i[1]
+               self.dfl_subsystem = subsystem
+            if i[0] == 'group':
+               group = i[1]
+               self.dfl_group = group
+            if i[0] == 'dl_name':
+               dl_name = i[1]
+               self.dl_name = dl_name
+            if i[0] == 'dl_path':
+               dl_path = i[1]
+               self.dl_path = dl_path
+            if i[0] == 'lproc_name':
+               lproc_name = i[1]
+               self.lproc_name = lproc_name
+            if i[0] == 'lproc_port':
+               lproc_port = i[1]
+               self.lproc_port = lproc_port
+         return [XDRNamespace(x[1], location, subsystem, group, dl_name, dl_path, lproc_name, lproc_port)]
       elif x[0] == 'nonamespace':
          return []
       elif x[0] == 'import':
@@ -450,7 +504,15 @@ class Parser:
 #                        [XDRUnionMember(y[0], self.xdr_parse_declaration(y[1])) for y in x[3]])
       elif x[0] == 'error':
          return [XDRError(x[1], x[1].split('::')[-1], x[2])]
-
+      elif x[0] == 'event':
+         summary = ''
+         num = '0'
+         for field in x[2]:
+            if field[0] == 'summary':
+               summary = field[1]
+         if len(x) >= 4:
+            num = x[3]
+         return [XDREvent(x[1], num, summary, self.lproc_name, self.lproc_port)]
       elif x[0] == 'command':
          summary = None
          param = '0'

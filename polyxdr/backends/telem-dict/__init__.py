@@ -3,11 +3,21 @@ import tenjin
 from polyxdr.parser import *
 from collections import namedtuple
 
+def enumToVal(ir, name):
+   for x in ir:
+      if isinstance(x, XDREnum):
+         for m in x.members:
+            if m.name == name:
+               return m.value
+   return "NA"
+
 def generateHeader(ir, out, parent, p_unit, p_name, type_filter):
 
 #      if isinstance(x, XDRStruct) or isinstance(x, XDRBitfield):
    for x in ir:
-      if isinstance(x, XDRStruct):
+      if isinstance(x, XDREvent):
+         render_template(out, "event", dict(st=x,proc_name=x.proc_name,port=x.port,id=enumToVal(ir, x.id),desc=x.summary,name=x.name))
+      elif isinstance(x, XDRStruct):
 #print(x)
          if type_filter != None and x.name != type_filter:
             continue
