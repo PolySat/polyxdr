@@ -1,0 +1,7 @@
+<SUBPROCESS>
+   NAME=${name}
+   PROC_PATH=${path}
+   PARAM=${param}
+   POWER=1
+   POWER_PROC=./none
+

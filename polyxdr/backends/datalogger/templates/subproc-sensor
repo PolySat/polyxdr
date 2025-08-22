@@ -1,0 +1,6 @@
+   <SENSOR>
+      NAME=${name}
+      SENSOR_KEY=${key}
+      LOCATION=${location}
+      GROUPS=${group}
+   </SENSOR>

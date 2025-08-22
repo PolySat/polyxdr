@@ -98,8 +98,6 @@ class Parser:
       self.dfl_location = ''
       self.dfl_subsystem = ''
       self.dfl_group = ''
-      self.dl_name = ''
-      self.dl_path = ''
       self.lproc_name = ''
       self.lproc_port = ''
       kw = P.Keyword
@@ -206,8 +204,6 @@ class Parser:
              P.Optional(g(kw("location") + P.QuotedString('"') + s(";"))) & \
              P.Optional(g(kw("subsystem") + P.QuotedString('"') + s(";"))) & \
              P.Optional(g(kw("group") + P.QuotedString('"') + s(";"))) & \
-             P.Optional(g(kw("dl_name") + P.QuotedString('"') + s(";"))) & \
-             P.Optional(g(kw("dl_path") + P.QuotedString('"') + s(";"))) & \
              P.Optional(g(kw("lproc_name") + P.QuotedString('"') + s(";"))) & \
              P.Optional(g(kw("lproc_port") + decimal_literal + s(";"))) \
           ) + s("}")
@@ -246,10 +242,28 @@ class Parser:
       struct_def = kw("struct") - newscopedidentifier - g(struct_body) + P.Optional(s('=') - type_name) - s(";")
       struct_def.setParseAction(self.newStruct)
 
+      subprocess_exclude = g(kw("exclude") + identifier + s(";"))
+      subprocess_options = \
+             P.Optional(g(kw("name") + P.QuotedString('"') + s(";"))) & \
+             g(kw("path") + P.QuotedString('"') + s(";")) & \
+             P.Optional(g(kw("param") + P.QuotedString('"') + s(";"))) & \
+             P.Optional(g(kw("location") + P.QuotedString('"') + s(";"))) & \
+             P.Optional(g(kw("group") + P.QuotedString('"') + s(";"))) & \
+             P.ZeroOrMore(subprocess_exclude)
+
+      subprocess_body = s("{") + subprocess_options + s("}")
+      subprocess = g(kw("subprocess") + subprocess_body + s(";"))
+
+      datalogger_options = \
+             g(kw("struct") + resolvedIdentifier + s(";")) & \
+             P.ZeroOrMore(subprocess)
+      datalogger_body = s("{") + datalogger_options + s("}")
+
       command_options = \
              P.Optional(g(kw("summary") + P.QuotedString('"') + s(";"))) & \
              P.Optional(g(kw("param") + type_name + s(";")))  & \
              P.Optional(g(kw("types") + s("=") + g(type_name + P.ZeroOrMore(s(',') + type_name)) + s(";"))) & \
+             P.Optional(g(kw("datalogger") + datalogger_body + s(";")))  & \
              P.Optional(g(kw("response") + g(type_name + P.ZeroOrMore(s(',') + type_name)) + s(";")))
 
       command_body = s("{") + command_options + s("}")
@@ -519,6 +533,12 @@ class Parser:
          response = None
          types = None
          num = '0'
+         datalogger = []
+         location = self.dfl_location
+         subsystem = self.dfl_subsystem
+         group = self.dfl_group
+         if group == '':
+            group = subsystem
          for field in x[2]:
             if field[0] == 'summary':
                summary = field[1]
@@ -528,11 +548,39 @@ class Parser:
                response = field[1]
             if field[0] == 'types':
                types = field[1]
+            if field[0] == 'datalogger':
+               structure = None
+               for dlf in field[1:]:
+                  if dlf[0] == 'struct':
+                     structure = dlf[1]
+               for dlf in field[1:]:
+                  if dlf[0] == 'subprocess':
+                     name = x[1]
+                     path = None
+                     param = ''
+                     excludes = []
+                     for spf in dlf[1:]:
+                        if spf[0] == 'path':
+                           path = spf[1]
+                        elif spf[0] == 'param':
+                           param = spf[1]
+                        elif spf[0] == 'name':
+                           name = spf[1]
+                        elif spf[0] == 'exclude':
+                           excludes.append(spf[1])
+                        elif spf[0] == 'location':
+                           location = spf[1]
+                        elif spf[0] == 'group':
+                           group = spf[1]
+                        else:
+                           print(spf)
+                     datalogger.append(XDRSubprocess(name, structure, path, \
+                              param, excludes, location, group))
          if len(x) >= 4:
             num = x[3]
          self.cmdcnt += 1
          return [XDRCommand(x[1], num, summary, param, response, types, \
-               self.namespace + 'AUTOCMD_' + str(self.cmdcnt))]
+               self.namespace + 'AUTOCMD_' + str(self.cmdcnt), datalogger)]
 
    def xdr_parse(self, src):
       """

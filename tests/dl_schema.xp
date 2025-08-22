@@ -115,6 +115,21 @@ struct DeployParams {
 
 command "ade-status" {
    summary "Reports the deployment time and deployment status of the ade payload process";
+   datalogger { 
+      subprocess {
+         path "/foo/bar";
+         location "sb";
+         group "moon";
+      };
+      subprocess {
+         name "subproc2";
+         path "/foo/bar";
+         param "-f kvp";
+         exclude mag_z;
+         exclude mag_y;
+      };
+      struct Status;
+   };
 } = IPC::CMDS::STATUS;
 
 command "deploy" {
