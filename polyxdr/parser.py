@@ -557,13 +557,13 @@ class Parser:
                   if dlf[0] == 'subprocess':
                      name = x[1]
                      path = None
-                     param = ''
+                     dlparam = ''
                      excludes = []
                      for spf in dlf[1:]:
                         if spf[0] == 'path':
                            path = spf[1]
                         elif spf[0] == 'param':
-                           param = spf[1]
+                           dlparam = spf[1]
                         elif spf[0] == 'name':
                            name = spf[1]
                         elif spf[0] == 'exclude':
@@ -575,7 +575,7 @@ class Parser:
                         else:
                            print(spf)
                      datalogger.append(XDRSubprocess(name, structure, path, \
-                              param, excludes, location, group))
+                              dlparam, excludes, location, group))
          if len(x) >= 4:
             num = x[3]
          self.cmdcnt += 1
