@@ -13,8 +13,8 @@ config = {
     'author_email': 'cubesat@cubesat.org',
     'version': '0.1',
     'install_requires': ['nose', 'tenjin', 'pyparsing<=2.4'],
-    'packages': ['polyxdr', 'polyxdr/backends', 'polyxdr/backends/xp', 'polyxdr/backends/libproc', 'polyxdr/backends/telem-dict', 'polyxdr/backends/telem-keys'],
-    'package_data': {'polyxdr': ['backends/libproc/templates/*.c', 'backends/libproc/templates/*.h', 'backends/xp/templates/*.xp', 'backends/telem-dict/templates/s*', 'backends/telem-keys/templates/s*', 'backends/telem-dict/templates/e*']},
+    'packages': ['polyxdr', 'polyxdr/backends', 'polyxdr/backends/xp', 'polyxdr/backends/libproc', 'polyxdr/backends/telem-dict', 'polyxdr/backends/telem-keys','polyxdr/backends/datalogger'],
+    'package_data': {'polyxdr': ['backends/libproc/templates/*.c', 'backends/libproc/templates/*.h', 'backends/xp/templates/*.xp', 'backends/telem-dict/templates/s*', 'backends/telem-keys/templates/s*', 'backends/telem-dict/templates/e*', 'backends/datalogger/templates/sub*']},
     'scripts': ['poly-xdrgen']
 }
 
