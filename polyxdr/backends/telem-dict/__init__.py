@@ -73,7 +73,7 @@ def generateHeader(ir, out, parent, p_unit, p_name, type_filter, p_desc, p_locat
             offset = p_offset
             if not offset or (doc.offset != None and doc.offset != 0):
                offset = doc.offset
-            print(doc)
+#            print(doc)
 
             name = p_name
             if p_name == None:

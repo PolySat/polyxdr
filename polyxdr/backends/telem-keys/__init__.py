@@ -17,7 +17,7 @@ def generateHeader(ir, out, parent, p_unit, p_name, type_filter):
 
 #print(m.type_name)
             doc = m.documentation
-            if not doc.export:
+            if not doc.visibility:
                continue
             key = parent
             if parent == None:
