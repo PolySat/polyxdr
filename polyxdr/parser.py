@@ -184,6 +184,8 @@ class Parser:
              P.Optional(g(kw("name") + P.QuotedString('"') + s(";"))) & \
              P.Optional(g(kw("noexport") + s(";"))) & \
              P.Optional(g(kw("export") + s(";"))) & \
+             P.Optional(g(kw("leaf-only") + s(";"))) & \
+             P.Optional(g(kw("children-only") + s(";"))) & \
              P.Optional(g(kw("unit") + P.QuotedString('"') + s(";"))) & \
              P.Optional(g(kw("computed_by") + conversion_expr + s(";"))) & \
              P.Optional(g(kw("conversion") + conversion_expr + s(";"))) & \
@@ -329,7 +331,7 @@ class Parser:
       location = self.dfl_location
       subsystem = self.dfl_subsystem
       group = self.dfl_group
-      export = True
+      visibility = -1
       for field in x:
          if field[0] == 'key':
             key = field[1]
@@ -359,19 +361,23 @@ class Parser:
             true_label = field[1]
          if field[0] == 'false_label':
             false_label = field[1]
+         if field[0] == 'children-only':
+            visibility = 3
+         if field[0] == 'leaf-only':
+            visibility = 2
          if field[0] == 'noexport':
-            export = False
+            visibility = 0
          if field[0] == 'export':
-            export = True
+            visibility = 1
          if subsystem == '' and group != '':
             subsystem = group
          if group == '' and subsystem != '':
             group = subsystem
-      return XDRFieldDocumentation(key, name, desc, offset, divisor, conv, inv, unit, computed, true_label, false_label, location, subsystem, group, export)
+      return XDRFieldDocumentation(key, name, desc, offset, divisor, conv, inv, unit, computed, true_label, false_label, location, subsystem, group, visibility)
 
    def xdr_parse_declaration(self, x):
       if x[0] == 'void':
-         return XDRDeclaration(None, 'basic', 'void', None, None, True, XDRFieldDocumentation('', '', '', 0, 1, '', '', '', '', '', '', '', '', '', False), 0, 'void')
+         return XDRDeclaration(None, 'basic', 'void', None, None, True, XDRFieldDocumentation('', '', '', 0, 1, '', '', '', '', '', '', '', '', '', 0), 0, 'void')
       elif x[0] == 'opaque' or x[0] == 'string':
          type = x[0]
          name = x[1]

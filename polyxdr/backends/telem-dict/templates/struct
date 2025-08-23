@@ -1,10 +1,10 @@
 <SENSOR>
    KEY=${key}
-   UNITS=${doc.unit}
-   NAME=${doc.name}
-   DESCRIPTION=${doc.description}
-   LOCATION=${doc.location}
-   SUBSYSTEM=${doc.subsystem}
-   DIVISOR=${doc.divisor}
-   OFFSET=${doc.offset}
+   UNITS=${unit}
+   NAME=${name}
+   DESCRIPTION=${desc}
+   LOCATION=${location}
+   SUBSYSTEM=${subsystem}
+   DIVISOR=${divisor}
+   OFFSET=${offset}
 </SENSOR>

@@ -11,7 +11,7 @@ def enumToVal(ir, name):
                return m.value
    return "NA"
 
-def generateHeader(ir, out, parent, p_unit, p_name, type_filter):
+def generateHeader(ir, out, parent, p_unit, p_name, type_filter, p_desc, p_location, p_subsystem, p_divisor, p_offset):
 
 #      if isinstance(x, XDRStruct) or isinstance(x, XDRBitfield):
    for x in ir:
@@ -22,13 +22,23 @@ def generateHeader(ir, out, parent, p_unit, p_name, type_filter):
          if type_filter != None and x.name != type_filter:
             continue
          for m in x.members:
-            if m.documentation == None:
+            has_child = False
+            pub_node = True
+            pub_child = False
+            if "::" in m.type_name:
+               has_child = True
+               pub_child = True
+            doc = m.documentation
+            if doc == None:
                continue
 
-#print(m.type_name)
-            doc = m.documentation
-            if not doc.export:
+            if 0 == doc.visibility:
                continue
+            if -1 == doc.visibility and has_child:
+               pub_node = False
+            if 2 == doc.visibility and (not parent or has_child):
+               pub_node = False
+
             key = parent
             if parent == None:
                key = doc.key
@@ -41,16 +51,41 @@ def generateHeader(ir, out, parent, p_unit, p_name, type_filter):
             if p_unit == None or doc.unit != '':
                unit = doc.unit
 
+            desc = p_desc
+            if p_desc == None:
+               desc = doc.description
+            else:
+               if doc.description != '':
+                  desc = p_desc + '.  ' + doc.description
+
+            location = p_location
+            if doc.location and doc.location != '':
+               location = doc.location
+
+            subsystem = p_subsystem
+            if doc.subsystem and doc.subsystem != '':
+               subsystem = doc.subsystem
+
+            divisor = p_divisor
+            if not divisor or (doc.divisor != None and doc.divisor != 1):
+               divisor = doc.divisor
+
+            offset = p_offset
+            if not offset or (doc.offset != None and doc.offset != 0):
+               offset = doc.offset
+            print(doc)
+
             name = p_name
             if p_name == None:
                name = doc.name
             else:
                if doc.name != '':
-                  name = p_name + ': ' + doc.name
+                  name = p_name + ' - ' + doc.name
             #print(doc)
-            render_template(out, "struct", dict(st=x,doc=doc,key=key,unit=unit,name=name))
-            if "::" in m.type_name:
-               generateHeader(ir, out, key, unit, name, m.type_name)
+            if pub_node:
+               render_template(out, "struct", dict(st=x,doc=doc,key=key,unit=unit,name=name,desc=desc,location=location,subsystem=subsystem,divisor=divisor,offset=offset))
+            if pub_child:
+               generateHeader(ir, out, key, unit, name, m.type_name, desc, location, subsystem, divisor, offset)
                
 
 #   for x in ir:
@@ -66,7 +101,7 @@ def generateHeader(ir, out, parent, p_unit, p_name, type_filter):
 def generate(ir, output):
 #    print(ir)
     out = open(output, 'w')
-    generateHeader(ir, out, None, None, None, None)
+    generateHeader(ir, out, None, None, None, None, None, None, None, None, None)
     out.close()
 
 def render_template(out, name, context):
